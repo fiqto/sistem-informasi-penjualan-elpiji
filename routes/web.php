@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,12 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+    // Route::get('/customer', [HomeController::class, 'customer'])->name('customer');
+    Route::get('/account', [HomeController::class, 'account'])->name('account')->middleware('is_admin');
+    
+    Route::resource('members', MemberController::class);
+    Route::resource('transactions', TransactionController::class);
+    
 });
 
 
