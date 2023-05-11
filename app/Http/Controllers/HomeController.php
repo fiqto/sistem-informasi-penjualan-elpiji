@@ -3,31 +3,50 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     //
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index()
     {
-        return view('adminHome');
+        // Menghitung Total Stok
+        $totalPembelian = DB::table('transactions')
+                ->where('transation_type', '=', 'Pembelian')
+                ->sum('total_item');
 
-        // $is_admin=Auth::user()->is_admin;
-        // if($is_admin=='1'){
-        //     return view('adminHome');
-        // }
-        // else{
-        //     return view('home');
-        // }
-    }
+        $totalPenjualan = DB::table('transactions')
+                ->where('transation_type', '=', 'Penjualan')
+                ->sum('total_item');
 
-    public function account()
-    {
-        return view('account.table');
+        $totalStok = $totalPembelian - $totalPenjualan;
+
+        // Menghitung Pendapatan
+        $totalPenjualan = DB::table('transactions')
+                ->where('transation_type', '=', 'Penjualan')
+                ->sum('total_price');
+        
+        // Menghitung Status Belum Lunas
+        $statusBelumLunas = DB::table('transactions')
+                ->where('status', '=', 'Belum Lunas')
+                ->count();
+        
+        // Menghitung Status Proses
+        $statusProses = DB::table('transactions')
+                ->where('status', '=', 'Proses')
+                ->count();
+
+        return view('adminHome')
+            ->with(['totalStok' => $totalStok])
+            ->with(['totalPenjualan' => $totalPenjualan])
+            ->with(['statusBelumLunas' => $statusBelumLunas])
+            ->with(['statusProses' => $statusProses]);
+
     }
 
 }

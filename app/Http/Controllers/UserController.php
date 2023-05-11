@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
-use App\Http\Requests\StoreMemberRequest;
-use App\Http\Requests\UpdateMemberRequest;
+use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
-class MemberController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +17,11 @@ class MemberController extends Controller
     public function index()
     {
         //
-        $member = DB::table('members')
-            ->paginate(10);
+        $user = DB::table('users')
+            ->paginate(15);
 
-        return view('member.table')
-            ->with('members', $member);
+        return view('account.table')
+            ->with('users', $user);
     }
 
     /**
@@ -33,19 +35,19 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request)
+    public function store(StoreUserRequest $request)
     {
         //
-        DB::table('members')->insert($request->validated());
+        DB::table('users')->insert($request->validated());
         
-        return redirect()->route('members.index')
+        return redirect()->route('users.index')
             ->with('success', 'Berhasil DiTambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Member $member)
+    public function show(User $user)
     {
         //
     }
@@ -53,7 +55,7 @@ class MemberController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Member $member)
+    public function edit(User $user)
     {
         //
     }
@@ -61,24 +63,24 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMemberRequest $request, Member $member)
+    public function update(UpdateUserRequest $request, User $user)
     {
         //
-        $member->update($request->validated());
+        $user->update($request->validated());
         
-        return redirect()->route('members.index')
+        return redirect()->route('users.index')
             ->with('success', 'Berhasil DiUpdate!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Member $member)
+    public function destroy(User $user)
     {
         //
-        $member->delete();
+        $user->delete();
         
-        return redirect()->route('members.index')
+        return redirect()->route('users.index')
             ->with('success', 'Berhasil Dihapus!');
     }
 }

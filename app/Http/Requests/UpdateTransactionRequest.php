@@ -9,9 +9,9 @@ class UpdateTransactionRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -19,10 +19,17 @@ class UpdateTransactionRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
             //
+            'transation_type' => 'required',
+            'member_id' => 'required',
+            'transation_date' => 'required',
+            'total_item' => 'required',
+            'total_price' => 'required',
+            'status' => 'required',
+            'order_notes' => 'required',
         ];
     }
 }

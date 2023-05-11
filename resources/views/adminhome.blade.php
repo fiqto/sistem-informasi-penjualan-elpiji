@@ -9,8 +9,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Total Pengajuan</p>
-                      <h5 class="mb-2 text-2xl font-bold text-blue-500">Total</h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Total Stok</p>
+                      <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $totalStok }}</h5>
 
                     </div>
                   </div>
@@ -32,8 +32,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Setuju</p>
-                      <h5 class="mb-2 text-2xl font-bold text-green-500">Agree</h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Total Penjualan</p>
+                      <h5 class="mb-2 text-2xl font-bold text-green-500">{{ $totalPenjualan }}</h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
@@ -52,8 +52,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Tolak</p>
-                      <h5 class="mb-2 text-2xl font-bold text-red-500">Reject</h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Belum Lunas</p>
+                      <h5 class="mb-2 text-2xl font-bold text-red-500">{{ $statusBelumLunas }}</h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">
@@ -72,8 +72,8 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Baru</p>
-                      <h5 class="mb-2 text-2xl font-bold text-yellow-500">New</h5>
+                      <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Proses</p>
+                      <h5 class="mb-2 text-2xl font-bold text-yellow-500">{{ $statusProses }}</h5>
                     </div>
                   </div>
                   <div class="px-3 text-right basis-1/3">

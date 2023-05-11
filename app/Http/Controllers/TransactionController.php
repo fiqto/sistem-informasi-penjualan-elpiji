@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Member;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +15,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('transaction.table');
-        //
-        // $transaction = DB::table('transactions')
-        //     ->paginate(10);
+        $transactions = Transaction::latest()->get();
 
-        // return view('transaction.table')
-        //     ->with('transactions', $transaction);
+        return view('transaction.table', compact('transactions'));
     }
 
     /**
@@ -37,6 +34,10 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request)
     {
         //
+        DB::table('transactions')->insert($request->validated());
+        
+        return redirect()->route('transactions.index')
+            ->with('success', 'Berhasil DiTambahkan!');
     }
 
     /**
@@ -61,6 +62,10 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         //
+        $transaction->update($request->validated());
+        
+        return redirect()->route('transactions.index')
+            ->with('success', 'Berhasil DiUpdate!');
     }
 
     /**
@@ -69,5 +74,9 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
+        $transaction->delete();
+        
+        return redirect()->route('transactions.index')
+            ->with('success', 'Berhasil Dihapus!');
     }
 }

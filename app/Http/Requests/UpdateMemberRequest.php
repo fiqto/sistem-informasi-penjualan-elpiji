@@ -24,7 +24,7 @@ class UpdateMemberRequest extends FormRequest
         return [
             //
             'member_name' => 'required',
-            'phone_number' => 'required|unique:members|regex:/^(\+62)[0-9]{11}$/',
+            'phone_number' => 'required',
             'address' => 'required',
         ];
     }

@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->string('transaction_code');
+            $table->bigIncrements('id');
             $table->string('transation_type');
-            $table->string('member_name');
-            $table->timestamp('transation_date');
+            $table->bigInteger('member_id')->unsigned();
+            $table->string('transation_date');
             $table->string('total_item');
             $table->string('total_price');
             $table->string('status');
             $table->string('order_notes');
             $table->timestamps();
+            $table->foreign('member_id')->references('id')->on('members');
         });
     }
 

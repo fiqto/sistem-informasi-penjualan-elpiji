@@ -52,7 +52,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('account') }}" class="{{ Route::is('account') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
+                        <a href="{{ route('users.index') }}" class="{{ Route::is('users.index') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
                             <span>Daftar Akun</span>
                         </a>
                     </li>
