@@ -13,15 +13,22 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('transation_type');
+            $table->string('transaction_type');
+            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('member_id')->unsigned();
-            $table->string('transation_date');
-            $table->string('total_item');
-            $table->string('total_price');
+            $table->string('member_name');
+            $table->string('member_phone_number');
+            $table->string('member_address');
+            $table->bigInteger('stock_id')->unsigned();
+            $table->date('transaction_date');
+            $table->integer('quantity');
+            $table->integer('price');
             $table->string('status');
-            $table->string('order_notes');
+            $table->string('order_notes')->nullable();
             $table->timestamps();
             $table->foreign('member_id')->references('id')->on('members');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('stock_id')->references('id')->on('stocks');
         });
     }
 

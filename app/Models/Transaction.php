@@ -12,16 +12,30 @@ class Transaction extends Model
     protected $table = "transactions";
     protected $fillable = [
         'id',
-        'transation_type',
+        'transaction_type',
+        'user_id',
         'member_id',
-        'transation_date',
-        'total_item',
-        'total_price',
+        'member_name',
+        'member_phone_number',
+        'stock_id',
+        'member_address',
+        'transaction_date',
+        'quantity',
+        'price',
         'status',
         'order_notes',
     ];
+
+    public function users(){
+    	return $this->belongsTo(User::class,'user_id', 'id');
+    }
+
     public function members(){
     	return $this->belongsTo(Member::class,'member_id', 'id');
+    }
+
+    public function stocks(){
+    	return $this->belongsTo(Stock::class,'stok_id', 'id');
     }
 
 }

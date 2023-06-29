@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Transaction;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use Illuminate\Support\Facades\DB;
@@ -15,11 +16,10 @@ class MemberController extends Controller
     public function index()
     {
         //
-        $member = DB::table('members')
+        $members = Member::orderBy('id', 'desc')
             ->paginate(10);
-
-        return view('member.table')
-            ->with('members', $member);
+        
+        return view('member.table', compact('members'));
     }
 
     /**
@@ -76,6 +76,13 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
         //
+        $hasTransactions = Transaction::where('member_id', $member->id)->exists();
+
+        if ($hasTransactions) {
+            return redirect()->route('members.index')
+                ->with('error', 'Tidak dapat menghapus data karena memiliki keterhubungan dengan transaksi yang ada.');
+        }
+
         $member->delete();
         
         return redirect()->route('members.index')

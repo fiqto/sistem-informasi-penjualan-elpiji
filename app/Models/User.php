@@ -24,11 +24,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
         'is_admin',
     ];
+
+    public function transactions(){
+    	return $this->hasMany(Transaction::class, 'id', 'user_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

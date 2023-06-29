@@ -16,12 +16,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-        $user = DB::table('users')
-            ->paginate(15);
-
-        return view('account.table')
-            ->with('users', $user);
+        // 
+        $users = User::orderBy('id', 'desc')
+        ->paginate(10);
+        
+        return view('account.table', compact('users'));
     }
 
     /**

@@ -25,53 +25,75 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        {{-- Side Menu --}}
-        <aside class="ml-[-100%] fixed z-10 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-slate-700 transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%]">
-            <div>
-                <div class="px-6 py-4 -mx-6">
-                    <a href="{{ route('dashboard') }}" title="home" class="text-2xl font-black text-gray-50">
-                        Pangkalan Gas Elpiji Herman
-                    </a>
-                </div>
-    
-                <ul class="mt-8 space-y-2 tracking-wide">
-                    <li>
-                        <a href="{{ route('dashboard') }}" class="{{ Route::is('dashboard') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
-                            <span class="-mr-1">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('transactions.index') }}" class="{{ Route::is('transactions.index') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
-                            <span>Daftar Transaksi</span>
-                        </a>
-                    </li>
-                    @if(Auth::user()->is_admin == 1)
-                    <li>
-                        <a href="{{ route('members.index') }}" class="{{ Route::is('members.index') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
-                            <span>Daftar Pelanggan</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('users.index') }}" class="{{ Route::is('users.index') ? 'relative px-4 py-3 flex items-center space-x-4 rounded-xl text-gray-700 bg-gray-50 font-semibold' : 'px-4 py-3 flex items-center space-x-4 rounded-md text-gray-50 group font-semibold' }}">
-                            <span>Daftar Akun</span>
-                        </a>
-                    </li>
-                    @endif
-                </ul>
-            </div>
-        </aside>
-
-        <div class="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
+        <div class="min-h-screen bg-gray-100">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="px-4 py-6 mx-auto sm:px-6 lg:px-8">
+                <header>
+                    <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endif
+
+            {{-- Notifikasi --}}
+            <div class="fixed z-50 top-10 right-5">
+                @if (session('success'))
+                    <div x-data="{ show: true }"
+                        x-init="setTimeout(() => show = false, 5000)"
+                        x-show="show"
+                        class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                        role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Check icon</span>
+                        </div>
+                        <div class="ml-3 text-sm font-normal">{{ session('success') }}</div>
+                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div x-data="{ show: true }"
+                        x-init="setTimeout(() => show = false, 5000)"
+                        x-show="show"
+                        class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                        role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Error icon</span>
+                        </div>
+                        <div class="ml-3 text-sm font-normal">{{ session('error') }}</div>
+                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('warning'))
+                    <div x-data="{ show: true }"
+                        x-init="setTimeout(() => show = false, 5000)"
+                        x-show="show"
+                        class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                        role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg dark:bg-orange-700 dark:text-orange-200">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Warning icon</span>
+                        </div>
+                        <div class="ml-3 text-sm font-normal">{{ session('warning') }}</div>
+                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-warning" aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                @endif
+            </div>
+            
 
             <!-- Page Content -->
             <main>
@@ -82,7 +104,25 @@
         @stack('modals')
 
         @livewireScripts
+        @livewireStyles
+
         
         <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+        {{-- <script src="../path/to/flowbite/dist/datepicker.js"></script> --}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', (event) => {
+                const dropdown = document.getElementById('dropdown-example');
+                if (dropdown.style.display === 'block') {
+                    dropdown.classList.remove('hidden');
+                }
+            });
+        </script>
+        
+        <script
+            type="text/javascript"
+            src="../node_modules/tw-elements/dist/js/tw-elements.umd.min.js">
+        </script>
     </body>
 </html>

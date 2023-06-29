@@ -17,5 +17,11 @@
         "postcss": "^8.4.21",
         "tailwindcss": "^3.2.7",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "flowbite-datepicker": "^1.2.2",
+        "select2": "^4.1.0-rc.0",
+        "toastr": "^2.1.4",
+        "tw-elements": "^1.0.0-beta2"
     }
 }

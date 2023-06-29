@@ -12,6 +12,8 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './node_modules/flowbite/**/*.js',
+        './src/**/*.{html,js}',
+        './node_modules/tw-elements/dist/js/**/*.js'
         // './vendor/wireui/wireui/resources/**/*.blade.php',
         // './vendor/wireui/wireui/ts/**/*.ts',
         // './vendor/wireui/wireui/src/View/**/*.php',
@@ -29,5 +31,5 @@ module.exports = {
         aspectRatio: false,
     },
 
-    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography'), require('flowbite/plugin'), require('@tailwindcss/aspect-ratio')],
+    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography'), require('flowbite/plugin'), require('@tailwindcss/aspect-ratio'), ],
 };

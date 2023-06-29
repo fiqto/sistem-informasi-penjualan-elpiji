@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreMemberRequest extends FormRequest
 {
@@ -24,8 +26,15 @@ class StoreMemberRequest extends FormRequest
         return [
             //
             'member_name' => 'required',
-            'phone_number' => 'required',
-            'address' => 'required',
+            'phone_number' => 'required|unique:members|regex:/^\+628[1-9]\d{7,11}$/',
+            'address' => 'required|unique:members',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            redirect()->back()->withInput()->withErrors($validator->errors())->with('error', 'Gagal menyimpan data.')
+        );
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateTransactionRequest extends FormRequest
 {
@@ -23,13 +25,22 @@ class UpdateTransactionRequest extends FormRequest
     {
         return [
             //
-            'transation_type' => 'required',
+            'transaction_type' => 'required',
+            'user_id' => 'nullable',
             'member_id' => 'required',
-            'transation_date' => 'required',
-            'total_item' => 'required',
-            'total_price' => 'required',
+            'stock_id' => 'required',
+            'transaction_date' => 'required',
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
             'status' => 'required',
-            'order_notes' => 'required',
+            'order_notes' => 'nullable',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            redirect()->back()->withInput()->withErrors($validator->errors())->with('error', 'Gagal menyimpan data.')
+        );
     }
 }
