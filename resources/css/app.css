@@ -9,12 +9,12 @@
 }
 	.select2-container .select2-selection--single {
 		/* Selection box itself */
-		@apply box-border block px-4 py-4 text-sm border border-gray-200 rounded-md cursor-pointer select-none focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400;
+		@apply box-border block w-full px-4 py-4 text-sm border border-gray-200 rounded-md cursor-pointer select-none focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400;
 	}
 
 		.select2-container .select2-selection--single .select2-selection__rendered {
 			/* DIV inside Selection box with text, clear button and arrow down*/
-			@apply block h-6 pl-2 pr-6 truncate;
+			@apply block w-full h-6 pl-2 pr-6 truncate;
 		}
 		.select2-container .select2-selection--single .select2-selection__clear {
 			/* The DIV where the X is housing to clear the chosen option */

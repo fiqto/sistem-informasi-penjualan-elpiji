@@ -64,7 +64,9 @@
     </table>
     <table width="100%" style="font-family: sans-serif;" cellpadding="10">
         <tr>
-            <td width="100%" style="border: 0.1mm solid #eee; text-align: left;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telephone:</strong> +62 822-1002-6245<br></td>
+            <td width="49%" style="border: 0.1mm solid #eee;"><strong>Laporan {{ $transaction_type }}</strong><br>Tanggal Laporan : {{ $start }} - {{ $end }}<br>Laporan Dibuat : {{ $currentDate }}<br></td>
+            <td width="2%">&nbsp;</td>
+            <td width="49%" style="border: 0.1mm solid #eee; text-align: right;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telepon :</strong> +62 822-1002-6245<br></td>
         </tr>
     </table>
     <br>
@@ -114,10 +116,11 @@
         <tfoot>
             <tr>
                 @if ( $transaction_type == "Penjualan")
-                <td colspan="8" style="padding: 0px 5px; line-height: 20px; text-align: center;">Total</td>
-                @else
                 <td colspan="7" style="padding: 0px 5px; line-height: 20px; text-align: center;">Total</td>
+                @else
+                <td colspan="6" style="padding: 0px 5px; line-height: 20px; text-align: center;">Total</td>
                 @endif
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $total_elpiji }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($total_transaksi, 0, ',', '.') }}</td>
                 @if ( $transaction_type == "Penjualan")
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($total_pendapatan, 0, ',', '.') }}</td>

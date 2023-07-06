@@ -137,8 +137,8 @@
                           <button type="button" data-modal-target="#deleteModal{{ $transaction->id }}" data-modal-toggle="deleteModal{{ $transaction->id }}" class="text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-4 focus:ring-red-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                           </button>
-                          <button type="button" data-modal-target="editModal{{ $transaction->id }}" data-modal-toggle="editModal{{ $transaction->id }}" class="text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                          <button type="button" data-modal-target="#editModal{{ $transaction->id }}" data-modal-toggle="editModal{{ $transaction->id }}" class="text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                           </button>
                         </div>
                       </td>
@@ -266,6 +266,21 @@
                   </select>
                 </div>
                 <div class="mb-6">
+                  <label for="stock_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Barang</label>
+                  <select required id="stock_id" name="stock_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <option selected value="{{ old('stock_id', $transaction->stock_id) }}">
+                      @foreach($transaction->stocks()->get() as $stock)
+                      {{ $stock->product_name }}
+                      @endforeach
+                    </option>
+                    @foreach ($stocks as $stock)
+                      @if ( old('stock_id', $transaction->stock_id) !=  $stock->id )
+                        <option value={{ $stock->id }}>{{ $stock->product_name }}</option>
+                      @endif
+                    @endforeach
+                  </select>
+                </div>
+                <div class="mb-6">
                   <label for="transaction_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tanggal Transaksi</label>
                       <div class="relative max-w-sm">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -280,7 +295,12 @@
                 </div>
                 <div class="mb-6">
                   <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Harga Satuan</label>
-                  <input type="number" id="price" name="price" value="{{ old('price', $transaction->price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Satuan">
+                  <div class="flex">
+                    <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                      Rp. 
+                    </span>
+                    <input type="number" id="price" name="price" value="{{ old('price', $transaction->price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Satuan">
+                  </div>
                 </div>
                 <div class="mb-6">
                   <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>

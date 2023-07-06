@@ -1,7 +1,7 @@
 <x-app-layout>
  <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
-       <div class="grid grid-cols-4 gap-4 mb-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
             <div class="text-center">
             <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Terjual Hari Ini</p>
@@ -27,7 +27,7 @@
             </div>
           </div>
        </div>
-       <div class="grid grid-cols-3 gap-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
          <div class="relative items-center justify-center text-center h-min-48 mb-4 rounded bg-white dark:bg-gray-800 col-span-2">
             <p class="mt-4 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Bagan Penjualan Perharian</p>
             <div class="mx-auto w-4/5 overflow-hidden my-4">
@@ -98,7 +98,7 @@
           </div>
          </div>
        </div>
-       <div class="grid grid-cols-2 gap-4 mb-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div class="relative items-center justify-center text-center item-center rounded bg-white h-min-28 dark:bg-gray-800">
              <p class="mt-4 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Daftar Transaksi Lunas</p>
              <div class="flex-auto px-6 pt-4 pb-6">

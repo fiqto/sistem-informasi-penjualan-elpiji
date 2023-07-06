@@ -31,8 +31,10 @@ class TransactionController extends Controller
             $keyword = $request->search;
             $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
                 ->where(function ($query) use ($keyword) {
-                    $query->where('member_name', 'like', "%$keyword%")
-                        ->orWhere('status', 'like', "%$keyword%");
+                    $query->whereHas('members', function ($query) use ($keyword) {
+                        $query->where('member_name', 'like', "%$keyword%");
+                    })
+                    ->orWhere('status', 'like', "%$keyword%");
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(10);
@@ -54,8 +56,10 @@ class TransactionController extends Controller
             $keyword = $request->search;
             $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
                 ->where(function ($query) use ($keyword) {
-                    $query->where('member_name', 'like', "%$keyword%")
-                        ->orWhere('status', 'like', "%$keyword%");
+                    $query->whereHas('members', function ($query) use ($keyword) {
+                        $query->where('member_name', 'like', "%$keyword%");
+                    })
+                    ->orWhere('status', 'like', "%$keyword%");
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(10);
@@ -92,21 +96,6 @@ class TransactionController extends Controller
         $start = (new DateTime($request->input('start')))->format('Y-m-d');
         $end = (new DateTime($request->input('end')))->format('Y-m-d');
         $currentDate = Carbon::now()->format('Y-m-d');
-        // $stock_id = $request->input('stock_id');
-        
-        // if ($stock_id == '0') {
-        // $transactions = Transaction::where('transaction_type', $transaction_type)
-        //     ->orderBy('id', 'desc')
-        //     ->whereBetween('transaction_date',[$start, $end])
-        //     ->get();
-            
-        // } else {
-        // $transactions = Transaction::where('stock_id', $request->stock_id)
-        //     ->orWhere('transaction_type', $transaction_type)
-        //     ->orderBy('id', 'desc')
-        //     ->whereBetween('transaction_date',[$start, $end])
-        //     ->get();
-        // }
 
         $transactions = Transaction::where('transaction_type', $transaction_type)
             ->orderBy('id', 'desc')
@@ -115,6 +104,11 @@ class TransactionController extends Controller
             
         $members = Member::all();
         $stocks = Stock::all();
+
+        $total_elpiji = 0;
+        foreach ($transactions as $transaction) {
+            $total_elpiji += $transaction->quantity;
+        }
 
         $total_transaksi = 0;
         foreach ($transactions as $transaction) {
@@ -127,7 +121,7 @@ class TransactionController extends Controller
         }
 
         $dompdf = new Dompdf();
-        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'total_transaksi', 'transaction_type', 'total_pendapatan', 'currentDate'))->render();
+        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'total_transaksi', 'transaction_type', 'total_pendapatan', 'total_elpiji', 'start', 'end', 'currentDate'))->render();
 
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -231,7 +225,7 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         $transactionType = $request->input('transaction_type');
-        $totalItem = $request->input('quantity');
+        $quantity = $request->input('quantity');
 
         $data = $request->validated();
 
@@ -240,35 +234,46 @@ class TransactionController extends Controller
         
 
         if ($transactionType == 'Pembelian') {
-            
+
+            $total = $stock->stock - $transaction->quantity + $quantity;
+
+            if ($total < 0) {
+                return redirect()->route('transactions.purchase')
+                    ->with('error', 'Stok tabung tidak mencukupi');
+            }
+
+            DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
             $transaction->update($data);
 
-            return redirect()->route('transactions.create')
+            return redirect()->route('transactions.purchase')
                 ->with('success', 'Berhasil DiTambahkan!');
 
         } else {
 
-            if ($totalItem > $stock->stock) {
-                return redirect()->route('transactions.index')
+            $total = $stock->stock + $transaction->quantity - $quantity;
+
+            if ($total < 0) {
+                return redirect()->route('transactions.selling')
                     ->with('error', 'Stok tabung tidak mencukupi');
 
             } else {
-                $stockUpdate = $stock->stock - $totalItem;
                 
-                if ($stockUpdate < 20) {
+                if ($total < 20) {
                     $details['email'] = 'pemilik@gmail.com';
                     dispatch(new SendEmailJob($details));
 
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
                     $transaction->update($data);
                 
-                    return redirect()->route('transactions.index')
+                    return redirect()->route('transactions.selling')
                         ->with('success', 'Berhasil DiTambahkan!')
                         ->with('warning', 'Stok tabung hampir habis, segera isi ulang');
 
                 } else {
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
                     $transaction->update($data);
                 
-                    return redirect()->route('transactions.index')
+                    return redirect()->route('transactions.selling')
                         ->with('success', 'Berhasil DiTambahkan!');
                 }
             }
@@ -289,6 +294,12 @@ class TransactionController extends Controller
         if ($transactionType == 'Pembelian') {
 
             $total = $stock->stock - $transaction->quantity;
+
+            if ($total < 0) {
+                return redirect()->route('transactions.purchase')
+                    ->with('error', 'Stok tabung tidak mencukupi');
+            }
+            
             DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
 
             $transaction->delete();

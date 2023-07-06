@@ -64,9 +64,9 @@
     </table>
     <table width="100%" style="font-family: sans-serif;" cellpadding="10">
         <tr>
-            <td width="49%" style="border: 0.1mm solid #eee;">Nama : {{ $transaction->members->member_name }}<br>Alamat : {{ $transaction->members->address }}<br>No telp. {{ $transaction->members->phone_number }}<br></td>
+            <td width="49%" style="border: 0.1mm solid #eee;">Nama : {{ $transaction->members->member_name }}<br>Alamat : {{ $transaction->members->address }}<br>Telepon : {{ $transaction->members->phone_number }}<br></td>
             <td width="2%">&nbsp;</td>
-            <td width="49%" style="border: 0.1mm solid #eee; text-align: right;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telephone:</strong> +62 822-1002-6245<br></td>
+            <td width="49%" style="border: 0.1mm solid #eee; text-align: right;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telepon :</strong> +62 822-1002-6245<br></td>
         </tr>
     </table>
     <br>
