@@ -18,6 +18,6 @@ class Stock extends Model
     ];
 
     public function transactions(){
-    	return $this->hasMany(Transaction::class, 'id', 'stok_id');
+    	return $this->hasMany(Transaction::class, 'id', 'stock_id');
     }
 }

@@ -9,17 +9,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $stocks = Stock::orderBy('id', 'desc')
+        if ($request->has('search')) {
+            $keyword = $request->search;
+            $stocks = Stock::where('product_name', 'like', "%$keyword%")
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $stocks = Stock::orderBy('id', 'desc')
             ->paginate(10);
+        }
 
         return view('stock.table', compact('stocks'));
     }

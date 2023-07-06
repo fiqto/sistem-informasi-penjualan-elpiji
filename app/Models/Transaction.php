@@ -15,10 +15,7 @@ class Transaction extends Model
         'transaction_type',
         'user_id',
         'member_id',
-        'member_name',
-        'member_phone_number',
         'stock_id',
-        'member_address',
         'transaction_date',
         'quantity',
         'price',
@@ -35,7 +32,7 @@ class Transaction extends Model
     }
 
     public function stocks(){
-    	return $this->belongsTo(Stock::class,'stok_id', 'id');
+    	return $this->belongsTo(Stock::class,'stock_id', 'id');
     }
 
 }

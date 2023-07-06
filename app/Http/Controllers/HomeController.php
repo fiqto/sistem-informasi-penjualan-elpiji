@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transaction;
 use App\Models\Stock;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -17,27 +18,52 @@ class HomeController extends Controller
 
     public function index()
     {
-        // Menghitung Total Stok
-        $totalPembelian = DB::table('transactions')
-                ->where('transaction_type', '=', 'Pembelian')
+        // Menampilkan Chart Penjualan
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
+        $twoDaysAgo = Carbon::now()->subDays(2)->format('Y-m-d');
+        $threeDaysAgo = Carbon::now()->subDays(3)->format('Y-m-d');
+        $fourDaysAgo = Carbon::now()->subDays(4)->format('Y-m-d');
+        $fiveDaysAgo = Carbon::now()->subDays(5)->format('Y-m-d');
+        $sixDaysAgo = Carbon::now()->subDays(6)->format('Y-m-d');
+
+        $totalYesterday = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $yesterday)
+                ->sum('quantity');
+        $totalTwoDaysAgo = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $twoDaysAgo)
+                ->sum('quantity');
+        $totalThreeDaysAgo = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $threeDaysAgo)
+                ->sum('quantity');
+        $totalFourDaysAgo = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $fourDaysAgo)
+                ->sum('quantity');
+        $totalFiveDaysAgo = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $fiveDaysAgo)
+                ->sum('quantity');
+        $totalSixDaysAgo = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $sixDaysAgo)
                 ->sum('quantity');
 
-        $totalPenjualan = DB::table('transactions')
-                ->where('transaction_type', '=', 'Penjualan')
-                ->sum('quantity');
-
-        $totalStok = $totalPembelian - $totalPenjualan;
-
-        // Menghitung Pendapatan
-        $totalPenjualan = DB::table('transactions')
-                ->where('transaction_type', '=', 'Penjualan')
+        // Menghitung Jumlah Pendapatan Penjualan Elpiji Hari Ini
+        $totalPendapatan = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $currentDate)
                 ->sum('price');
+
+        // Menghitung Jumlah Penjualan Elpiji Hari Ini
+        $totalPenjualan = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->whereDate('transaction_date', $currentDate)
+                ->sum('quantity');
         
-        // Menghitung Status Belum Lunas
-        $statusBelumLunas = DB::table('transactions')
-                ->where('status', '=', 'Belum Lunas')
+        // Menghitung Jumlah Pelanggan
+        $members = DB::table('members')
                 ->count();
 
+        // Menghitung Jumlah Pelanggan
+        $users = DB::table('users')
+                ->count();
+        
         // Tabel Stok
         $stocks = Stock::orderBy('id', 'desc')
                 ->paginate(10);
@@ -47,21 +73,36 @@ class HomeController extends Controller
                 ->paginate(5);
 
          // Tabel Transaksi Lunas
-         $statusBelum = Transaction::where('status', '=', 'Belum Lunas')
+        $statusBelum = Transaction::where('status', '=', 'Belum Lunas')
                 ->paginate(5);
 
+        // dd($yesterday);
+
         return view('dashboard')
-            ->with(['totalStok' => $totalStok])
+            
+            ->with(['totalYesterday' => $totalYesterday])
+            ->with(['totalTwoDaysAgo' => $totalTwoDaysAgo])
+            ->with(['totalThreeDaysAgo' => $totalThreeDaysAgo])
+            ->with(['totalFourDaysAgo' => $totalFourDaysAgo])
+            ->with(['totalFiveDaysAgo' => $totalFiveDaysAgo])
+            ->with(['totalSixDaysAgo' => $totalSixDaysAgo])
+
+            ->with(['currentDate' => $currentDate])
+            ->with(['yesterday' => $yesterday])
+            ->with(['twoDaysAgo' => $twoDaysAgo])
+            ->with(['threeDaysAgo' => $threeDaysAgo])
+            ->with(['fourDaysAgo' => $fourDaysAgo])
+            ->with(['fiveDaysAgo' => $fiveDaysAgo])
+            ->with(['sixDaysAgo' => $sixDaysAgo])
+        
+            ->with(['totalPendapatan' => $totalPendapatan])
             ->with(['totalPenjualan' => $totalPenjualan])
-            ->with(['statusBelumLunas' => $statusBelumLunas])
+            ->with(['members' => $members])
+            ->with(['users' => $users])
             ->with(['statusLunas' => $statusLunas])
             ->with(['statusBelum' => $statusBelum])
             ->with(['stocks' => $stocks]);
 
-    }
-
-    public function setting(){
-        return view('setting.table');
     }
 
 }

@@ -1,61 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <title>Nota Transaksi</title>
+    <meta charset="utf-8">
+    <title>Nota Penjualan</title>
+    <style>
+    body {
+        font-family: sans-serif;
+        font-size: 10pt;
+    }
+
+    p {
+        margin: 0pt;
+    }
+
+    table.items {
+        border: 0.1mm solid #e7e7e7;
+    }
+
+    td {
+        vertical-align: top;
+    }
+
+    .items td {
+        border-left: 0.1mm solid #e7e7e7;
+        border-right: 0.1mm solid #e7e7e7;
+    }
+
+    table thead td {
+        text-align: center;
+        border: 0.1mm solid #e7e7e7;
+    }
+
+    .items td.blanktotal {
+        background-color: #EEEEEE;
+        border: 0.1mm solid #e7e7e7;
+        background-color: #FFFFFF;
+        border: 0mm none #e7e7e7;
+        border-top: 0.1mm solid #e7e7e7;
+        border-right: 0.1mm solid #e7e7e7;
+    }
+
+    .items td.totals {
+        text-align: right;
+        border: 0.1mm solid #e7e7e7;
+    }
+
+    .items td.cost {
+        text-align: "."center;
+    }
+    </style>
 </head>
 
-<body class="bg-gray-100">
-  <div class="container px-4 py-8 mx-auto">
-    <div class="px-10 py-6 bg-white rounded-lg shadow-md">
-      <h2 class="mb-4 text-2xl font-semibold">Nota Transaksi</h2>
-      <div class="flex justify-between mb-4">
-        <div>
-          <p class="font-semibold">Nama Pelanggan:</p>
-          <p>
-            @foreach($transaction->members()->get() as $member)
-            {{ $member->member_name }}
-            @endforeach
-          </p>
-        </div>
-        <div>
-          <p class="font-semibold">Tanggal:</p>
-          <p>
-            {{ $transaction->transaction_date }}
-          </p>
-        </div>
-      </div>
-      <table class="w-full mb-4">
+<body>
+    <table width="100%" style="font-family: sans-serif;" cellpadding="10">
+        <tr>
+            <td width="100%" style="text-align: center; font-size: 20px; font-weight: bold; padding: 0px;">
+              Pangkalan Elpiji Herman 3Kg
+            </td>
+        </tr>
+        <tr>
+          <td height="10" style="font-size: 0px; line-height: 10px; height: 10px; padding: 0px;">&nbsp;</td>
+        </tr>
+    </table>
+    <table width="100%" style="font-family: sans-serif;" cellpadding="10">
+        <tr>
+            <td width="49%" style="border: 0.1mm solid #eee;">Nama : {{ $transaction->members->member_name }}<br>Alamat : {{ $transaction->members->address }}<br>No telp. {{ $transaction->members->phone_number }}<br></td>
+            <td width="2%">&nbsp;</td>
+            <td width="49%" style="border: 0.1mm solid #eee; text-align: right;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telephone:</strong> +62 822-1002-6245<br></td>
+        </tr>
+    </table>
+    <br>
+   
+    <br>
+    <table class="items" width="100%" style="font-size: 14px; border-collapse: collapse;" cellpadding="8">
         <thead>
-          <tr>
-            <th class="py-2">No.</th>
-            <th class="py-2">Produk</th>
-            <th class="py-2">Harga</th>
-            <th class="py-2">Jumlah</th>
-            <th class="py-2">Total</th>
-          </tr>
+            <tr>
+                <td width="30%" style="text-align: center;"><strong>Nama Barang</strong></td>
+                <td width="25%" style="text-align: center;"><strong>Tanggal Transaksi</strong></td>
+                <td width="15%" style="text-align: center;"><strong>Harga Satuan</strong></td>
+                <td width="10%" style="text-align: center;"><strong>Jumlah</strong></td>
+                <td width="20%" style="text-align: center;"><strong>Total</strong></td>
+            </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="py-2">1</td>
-            <td class="py-2">Elpiji 3kg</td>
-            <td class="py-2">Rp.{{ number_format($transaction->price, 0, ',', '.') }}</td>
-            <td class="py-2">{{ $transaction->quantity }}</td>
-            <td class="py-2">Rp.{{ number_format($transaction->quantity * $transaction->price, 0, ',', '.') }}</td>
-          </tr>
+            <!-- ITEMS HERE -->
+            <tr>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->stocks->product_name }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->transaction_date }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->price, 0, ',', '.') }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->quantity }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->quantity * $transaction->price, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="4" class="py-2 font-semibold">Total:</td>
-            <td class="py-2 font-semibold">Rp.{{ number_format($transaction->quantity * $transaction->price, 0, ',', '.') }}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
-</body>
+    </table>
+    <br>
 
+    <br>
+
+</body>
 </html>

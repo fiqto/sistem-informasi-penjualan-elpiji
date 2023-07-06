@@ -4,26 +4,26 @@
        <div class="grid grid-cols-4 gap-4 mb-4">
           <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
             <div class="text-center">
-            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Stok Tersedia</p>
-            <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $totalStok }}</h5>
-            </div>
-          </div>
-          <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
-            <div class="text-center">
-            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Total Penjualan</p>
+            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Terjual Hari Ini</p>
             <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $totalPenjualan }}</h5>
             </div>
           </div>
           <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
             <div class="text-center">
-            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Belum Lunas</p>
-            <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $statusBelumLunas }}</h5>
+            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Pendapatan Hari Ini</p>
+            <h5 class="mb-2 text-2xl font-bold text-blue-500">Rp.{{ number_format($totalPendapatan, 0, ',', '.') }}</h5>
             </div>
           </div>
           <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
             <div class="text-center">
-            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Belum Lunas</p>
-            <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $statusBelumLunas }}</h5>
+            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Jumlah Pelanggan</p>
+            <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $members }}</h5>
+            </div>
+          </div>
+          <div class="flex items-center justify-center h-24 rounded bg-white dark:bg-gray-800">
+            <div class="text-center">
+            <p class="mb-0 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Jumlah Pegawai</p>
+            <h5 class="mb-2 text-2xl font-bold text-blue-500">{{ $users }}</h5>
             </div>
           </div>
        </div>
@@ -31,8 +31,13 @@
          <div class="relative items-center justify-center text-center h-min-48 mb-4 rounded bg-white dark:bg-gray-800 col-span-2">
             <p class="mt-4 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Bagan Penjualan Perharian</p>
             <div class="mx-auto w-4/5 overflow-hidden my-4">
-               <canvas id="bar-chart"></canvas>
-             </div>
+              <canvas
+                data-te-chart="bar"
+                data-te-dataset-label="Jumlah Elpiji Terjual"
+                data-te-labels="['{{ $sixDaysAgo }}', '{{ $fiveDaysAgo }}' , '{{ $fourDaysAgo }}' , '{{ $threeDaysAgo }}' , '{{ $twoDaysAgo }}' , '{{ $yesterday }}' , '{{ $currentDate }}']"
+                data-te-dataset-data="[{{ $totalSixDaysAgo }}, {{ $totalFiveDaysAgo }} , {{ $totalFourDaysAgo }} , {{ $totalThreeDaysAgo }} , {{ $totalTwoDaysAgo }} , {{ $totalYesterday }} , {{ $totalPenjualan }}]">
+              </canvas>
+            </div>
          </div>
          <div class="relative items-center justify-center item-center text-center h-min-48 mb-4 rounded bg-white dark:bg-gray-800 col-span-1">
            <p class="mt-4 font-sans text-sm font-semibold leading-normal text-gray-900 uppercase opacity-60">Daftar Stok Barang</p>
@@ -137,11 +142,6 @@
                         <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                           <div class="flex items-center">
                             Total Harga
-                          </div>
-                        </th>
-                        <th class="p-4 text-left text-gray-900 whitespace-nowrap">
-                          <div class="flex items-center">
-                            Catatan Pesanan
                           </div>
                         </th>
                       </tr>

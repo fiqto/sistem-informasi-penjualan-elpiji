@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -14,11 +15,21 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // 
-        $users = User::orderBy('id', 'desc')
-        ->paginate(10);
+        //
+        if ($request->has('search')) {
+            $keyword = $request->search;
+            $users = User::where('name', 'like', "%$keyword%")
+                ->orWhere('email', 'like', "%$keyword%")
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $users = User::orderBy('id', 'desc')
+                ->paginate(10);
+        }
+
+        
         
         return view('account.table', compact('users'));
     }

@@ -9,7 +9,6 @@
             <form action="{{ route('transactions.store') }}" method="POST">
               @csrf
               @method('POST')
-              {{-- Tipe Transaksi Hidden --}}
               <div class="mb-6">
                 <label for="transaction_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Tipe Transaksi</label>
                 <select required id="transaction_type" name="transaction_type" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
@@ -20,7 +19,7 @@
               </div>
               <div class="mb-6">
                   <label for="member_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Pelanggan</label>
-                  <select required id="member_id" name="member_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                  <select required id="member_id" name="member_id" class="block w-full select2 px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                     <option selected value="">Pilih Pelanggan</option>
                     @foreach ($members as $member)
                     <option value={{ $member->id }}>{{ $member->member_name }}</option>
@@ -38,7 +37,7 @@
               </div>
               <div class="mb-6">
                 <label for="transaction_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tanggal Transaksi</label>
-                  <div class="relative max-w-sm">
+                  <div class="relative w-full">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                       <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                     </div>

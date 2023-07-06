@@ -13,6 +13,7 @@ use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -24,11 +25,22 @@ class TransactionController extends Controller
         
     }
 
-    public function purchase()
+    public function purchase(Request $request)
     {
-        $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+        if ($request->has('search')) {
+            $keyword = $request->search;
+            $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
+                ->where(function ($query) use ($keyword) {
+                    $query->where('member_name', 'like', "%$keyword%")
+                        ->orWhere('status', 'like', "%$keyword%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
 
         $members = Member::latest()->get();
         $stocks = Stock::latest()->get();
@@ -36,16 +48,28 @@ class TransactionController extends Controller
         return view('transaction.incoming', compact('transactions','members', 'stocks'));
     }
 
-    public function selling()
+    public function selling(Request $request)
     {
-        $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
-            ->orderBy('id', 'desc')
-            ->paginate(10);
-
+        if ($request->has('search')) {
+            $keyword = $request->search;
+            $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->where(function ($query) use ($keyword) {
+                    $query->where('member_name', 'like', "%$keyword%")
+                        ->orWhere('status', 'like', "%$keyword%");
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
+        
         $members = Member::latest()->get();
         $stocks = Stock::latest()->get();
-
-        return view('transaction.outgoing', compact('transactions','members', 'stocks'));
+        
+        return view('transaction.outgoing', compact('transactions', 'members', 'stocks'));
+        
     }
 
 
@@ -63,11 +87,28 @@ class TransactionController extends Controller
 
     public function print(Request $request)
     {
+        // dd($request->stock_id);
         $transaction_type = $request->input('transaction_type');
         $start = (new DateTime($request->input('start')))->format('Y-m-d');
         $end = (new DateTime($request->input('end')))->format('Y-m-d');
+        $currentDate = Carbon::now()->format('Y-m-d');
+        // $stock_id = $request->input('stock_id');
         
-        $transactions = Transaction::where('transaction_type', '=', $transaction_type)
+        // if ($stock_id == '0') {
+        // $transactions = Transaction::where('transaction_type', $transaction_type)
+        //     ->orderBy('id', 'desc')
+        //     ->whereBetween('transaction_date',[$start, $end])
+        //     ->get();
+            
+        // } else {
+        // $transactions = Transaction::where('stock_id', $request->stock_id)
+        //     ->orWhere('transaction_type', $transaction_type)
+        //     ->orderBy('id', 'desc')
+        //     ->whereBetween('transaction_date',[$start, $end])
+        //     ->get();
+        // }
+
+        $transactions = Transaction::where('transaction_type', $transaction_type)
             ->orderBy('id', 'desc')
             ->whereBetween('transaction_date',[$start, $end])
             ->get();
@@ -80,8 +121,13 @@ class TransactionController extends Controller
             $total_transaksi += $transaction->quantity * $transaction->price;
         }
 
+        $total_pendapatan = 0;
+        foreach ($transactions as $transaction) {
+            $total_pendapatan += ($transaction->quantity * $transaction->price)-($transaction->quantity * $transaction->stocks->purchase_price);
+        }
+
         $dompdf = new Dompdf();
-        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'total_transaksi'))->render();
+        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'total_transaksi', 'transaction_type', 'total_pendapatan', 'currentDate'))->render();
 
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -100,7 +146,7 @@ class TransactionController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->render();
         
-        $dompdf->stream('transaksi-penjualan.pdf');
+        $dompdf->stream('transaksi-penjualan.pdf', ['Attachment' => false]);
     }
 
     /**
@@ -114,14 +160,6 @@ class TransactionController extends Controller
 
 
         $data = $request->validated();
-
-        $member_id = $request->input('member_id');
-        $member = DB::table('members')->where('id', $member_id)->first();
-        if ($member) {
-            $data['member_name'] = $member->member_name;
-            $data['member_phone_number'] = $member->phone_number;
-            $data['member_address'] = $member->address;
-        }
 
         $user = Auth::user();
         $data['user_id'] = $user->id;
@@ -195,19 +233,11 @@ class TransactionController extends Controller
         $transactionType = $request->input('transaction_type');
         $totalItem = $request->input('quantity');
 
-        $buy = DB::table('transactions')->where('transaction_type', '=', 'Pembelian')->sum('quantity');
-        $sale = DB::table('transactions')->where('transaction_type', '=', 'Penjualan')->sum('quantity');
-        $stock = $buy - $sale;
-
         $data = $request->validated();
-        $member_id = $request->input('member_id');
-        $member = DB::table('members')->where('id', $member_id)->first();
 
-        if ($member) {
-            $data['member_name'] = $member->member_name;
-            $data['member_phone_number'] = $member->phone_number;
-            $data['member_address'] = $member->address;
-        }
+        $stock_id = $request->input('stock_id');
+        $stock = DB::table('stocks')->where('id', $stock_id)->first();
+        
 
         if ($transactionType == 'Pembelian') {
             
@@ -218,12 +248,12 @@ class TransactionController extends Controller
 
         } else {
 
-            if ($totalItem > $stock) {
+            if ($totalItem > $stock->stock) {
                 return redirect()->route('transactions.index')
                     ->with('error', 'Stok tabung tidak mencukupi');
 
             } else {
-                $stockUpdate = $stock - $totalItem;
+                $stockUpdate = $stock->stock - $totalItem;
                 
                 if ($stockUpdate < 20) {
                     $details['email'] = 'pemilik@gmail.com';
@@ -253,17 +283,26 @@ class TransactionController extends Controller
         //
         $transactionType = $transaction->transaction_type;
 
+        $stock_id = $transaction->stock_id;
+        $stock = DB::table('stocks')->where('id', $stock_id)->first();
+
         if ($transactionType == 'Pembelian') {
+
+            $total = $stock->stock - $transaction->quantity;
+            DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
 
             $transaction->delete();
 
-            return redirect()->route('transactions.create')
+            return redirect()->route('transactions.purchase')
                 ->with('success', 'Berhasil Dihapus!');
         } else{
 
+            $total = $stock->stock + $transaction->quantity;
+            DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
+
             $transaction->delete();
         
-            return redirect()->route('transactions.index')
+            return redirect()->route('transactions.selling')
                 ->with('success', 'Berhasil Dihapus!');
         }
     }

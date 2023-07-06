@@ -6,6 +6,7 @@ use App\Models\Member;
 use App\Models\Transaction;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
@@ -13,11 +14,20 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $members = Member::orderBy('id', 'desc')
-            ->paginate(10);
+        if ($request->has('search')) {
+            $keyword = $request->search;
+            $members = Member::where('member_name', 'like', "%$keyword%")
+                ->orWhere('phone_number', 'like', "%$keyword%")
+                ->orWhere('address', 'like', "%$keyword%")
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        } else {
+            $members = Member::orderBy('id', 'desc')
+                ->paginate(10);
+        }
         
         return view('member.table', compact('members'));
     }

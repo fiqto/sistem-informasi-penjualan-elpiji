@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('transaction_type');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('member_id')->unsigned();
-            $table->string('member_name');
-            $table->string('member_phone_number');
-            $table->string('member_address');
             $table->bigInteger('stock_id')->unsigned();
             $table->date('transaction_date');
             $table->integer('quantity');
