@@ -137,5 +137,45 @@
             });
         </script>        
         
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              // Get the transaction type and stock ID elements
+              const transactionType = document.getElementById('transaction_type');
+              const stockId = document.getElementById('stock_id');
+              const priceInput = document.getElementById('price');
+          
+              // Function to update the price field based on the selected transaction type and stock ID
+              function updatePriceField() {
+                const selectedTransactionType = transactionType.value;
+                const selectedStockId = stockId.value;
+          
+                // Send an API request to retrieve the price data
+                fetch(`/api/stock/${selectedStockId}`)
+                  .then(response => response.json())
+                  .then(data => {
+                    const { purchase_price, selling_price } = data;
+          
+                    if (selectedTransactionType === 'Pembelian') {
+                      priceInput.value = purchase_price || '0';
+                    } else if (selectedTransactionType === 'Penjualan') {
+                      priceInput.value = selling_price || '0';
+                    } else {
+                      priceInput.value = '';
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    priceInput.value = '';
+                  });
+              }
+          
+              // Add event listeners to the transaction type and stock ID dropdowns
+              transactionType.addEventListener('change', updatePriceField);
+              stockId.addEventListener('change', updatePriceField);
+          
+              // Call the function initially to set the default price value
+              updatePriceField();
+            });
+        </script>
     </body>
 </html>

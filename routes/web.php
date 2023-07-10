@@ -6,10 +6,12 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
+use App\Models\Stock;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,30 @@ Route::middleware([
 
     Route::resource('stocks', StockController::class);
 
+    Route::get('/register', [RegisteredUserController::class, 'create'])
+        ->middleware(['is_admin'])
+        ->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store'])
+        ->middleware(['is_admin']);
+
+    Route::get('/api/stock/{stockId}', function ($stockId) {
+
+        $stock = Stock::find($stockId);
+
+        if ($stock) {
+            
+            $purchase_price = $stock->purchase_price;
+            $selling_price = $stock->selling_price;
+
+        } else {
+            $price = 0;
+        }
+
+        return response()->json([
+            'purchase_price' => $purchase_price,
+            'selling_price' => $selling_price
+        ]);
+    });
 });
 
 

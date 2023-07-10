@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Stock;
 use App\Http\Requests\StoreStockRequest;
 use App\Http\Requests\UpdateStockRequest;
+use App\Models\StockVersions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class StockController extends Controller
 {
@@ -47,6 +49,7 @@ class StockController extends Controller
     {
         //
         $data = $request->validated();
+        $data['created_at'] = now();
         $data['stock'] = 0;
         DB::table('stocks')->insert($data);
         
@@ -76,6 +79,8 @@ class StockController extends Controller
     public function update(UpdateStockRequest $request, Stock $stock)
     {
         //
+        $this->saveStockVersion($stock);
+
         // return var_dump($request->validated());
         $stock->update($request->validated());
         
@@ -101,5 +106,16 @@ class StockController extends Controller
         
         return redirect()->route('stocks.index')
             ->with('success', 'Berhasil Dihapus!');
+    }
+
+    private function saveStockVersion(Stock $stock)
+    {
+        StockVersions::create([
+            'product_id' => $stock->id,
+            'product_name' => $stock->product_name,
+            'stock' => $stock->stock,
+            'purchase_price' => $stock->purchase_price,
+            'selling_price' => $stock->selling_price,
+        ]);
     }
 }

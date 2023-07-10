@@ -94,6 +94,14 @@
         <tbody>
             <!-- ITEMS HERE -->
             @foreach ($transactions as $transaction)
+                @foreach ($stocks_versions as $stocks_version)
+                    @if ($stocks_version->created_at > $transaction->created_at)
+                        @php
+                            $firstPurchasePrice = $stocks_version->purchase_price;
+                            break;
+                        @endphp
+                    @endif
+                @endforeach
             <tr>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $loop->iteration }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->members->member_name }}</td>
@@ -101,15 +109,33 @@
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->transaction_date }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->status }}</td>
                 @if ( $transaction_type == "Penjualan")
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->stocks->purchase_price, 0, ',', '.') }}</td>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">
+                    @if ($transaction->stocks && $transaction->stocks->updated_at < $transaction->created_at)
+                        Rp.{{ number_format($transaction->stocks->purchase_price, 0, ',', '.') }}
+                    @else
+                        @if (isset($firstPurchasePrice))
+                            Rp.{{ number_format($firstPurchasePrice, 0, ',', '.') }}
+                        @endif
+                    @endif
+                    </td>
                 @endif
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->price, 0, ',', '.') }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->quantity }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->quantity * $transaction->price, 0, ',', '.') }}</td>
                 @if ( $transaction_type == "Penjualan")
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format(($transaction->quantity * $transaction->price)-($transaction->quantity * $transaction->stocks->purchase_price), 0, ',', '.') }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">
+                    @php
+                        if ($transaction->stocks && $transaction->stocks->updated_at < $transaction->created_at) {
+                            $keuntungan = ($transaction->quantity * $transaction->price) - ($transaction->quantity * $transaction->stocks->purchase_price);
+                        } elseif (isset($firstPurchasePrice)) {
+                            $keuntungan = ($transaction->quantity * $transaction->price) - ($transaction->quantity * $firstPurchasePrice);
+                        }
+
+                        $total_keuntungan += $keuntungan;
+                    @endphp
+                    Rp.{{ number_format($keuntungan, 0, ',', '.') }}
+                </td>
                 @endif
-                
             </tr>
             @endforeach
         </tbody>
@@ -123,7 +149,7 @@
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $total_elpiji }}</td>
                 <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($total_transaksi, 0, ',', '.') }}</td>
                 @if ( $transaction_type == "Penjualan")
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($total_pendapatan, 0, ',', '.') }}</td>
+                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($total_keuntungan, 0, ',', '.') }}</td>
                 @endif
             </tr>
         </tfoot>

@@ -4,12 +4,14 @@
         <div class="relative items-center justify-center p-8 mb-4 bg-white rounded min-h-48 dark:bg-gray-800">
           <div class="px-6 py-4">
             <p class="mb-4 text-2xl text-gray-900 dark:text-gray-500">Stok Barang</p>
+            @if(Auth::user()->is_admin == 1)
             <button data-modal-target="add-modal" data-modal-toggle="add-modal" type="button" class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
               </svg>
               Tambah Barang
             </button>
+            @endif
           </div>
   
             <p class="px-6 pt-4 text-sm text-left text-gray-900">Filter</p>
@@ -55,11 +57,13 @@
                             Harga Jual
                           </div>
                         </th>
+                        @if(Auth::user()->is_admin == 1)
                         <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                           <div class="flex items-center">
                             Aksi
                           </div>
                         </th>
+                        @endif
                       </tr>
                   </thead>
                 
@@ -81,6 +85,7 @@
                         <td class="p-4 text-gray-900 whitespace-nowrap">
                           Rp.{{ number_format($stock->selling_price, 0, ',', '.') }}
                         </td>
+                        @if(Auth::user()->is_admin == 1)
                         <td class="p-4 text-sm text-gray-700 whitespace-nowrap">                                
                           <div class="inline-flex rounded-md" role="group">
                             <button type="button" data-modal-target="#deleteModal{{ $stock->id }}" data-modal-toggle="deleteModal{{ $stock->id }}" class="text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-4 focus:ring-red-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
@@ -91,6 +96,7 @@
                             </button>
                           </div>
                         </td>
+                        @endif
                       </tr>
                     @endforeach
                   </tbody>

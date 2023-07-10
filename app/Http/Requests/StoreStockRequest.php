@@ -29,6 +29,7 @@ class StoreStockRequest extends FormRequest
             'stock' => 'nullable',
             'purchase_price' => 'required',
             'selling_price' => 'required',
+            'created_at' => 'nullable',
         ];
     }
 

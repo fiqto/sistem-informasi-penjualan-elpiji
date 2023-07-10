@@ -34,6 +34,7 @@ class StoreTransactionRequest extends FormRequest
             'price' => 'required|numeric',
             'status' => 'required',
             'order_notes' => 'nullable',
+            'created_at' => 'nullable',
         ];
     }
 

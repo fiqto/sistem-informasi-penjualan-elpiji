@@ -4,16 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Member;
+use App\Models\User;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmailJob;
 use App\Models\Stock;
+use App\Models\StockVersions;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 
 class TransactionController extends Controller
 {
@@ -104,6 +107,9 @@ class TransactionController extends Controller
             
         $members = Member::all();
         $stocks = Stock::all();
+        $stocks_versions = StockVersions::all();
+
+        $firstPurchasePrice = 0;
 
         $total_elpiji = 0;
         foreach ($transactions as $transaction) {
@@ -114,14 +120,11 @@ class TransactionController extends Controller
         foreach ($transactions as $transaction) {
             $total_transaksi += $transaction->quantity * $transaction->price;
         }
-
-        $total_pendapatan = 0;
-        foreach ($transactions as $transaction) {
-            $total_pendapatan += ($transaction->quantity * $transaction->price)-($transaction->quantity * $transaction->stocks->purchase_price);
-        }
+        
+        $total_keuntungan = 0;
 
         $dompdf = new Dompdf();
-        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'total_transaksi', 'transaction_type', 'total_pendapatan', 'total_elpiji', 'start', 'end', 'currentDate'))->render();
+        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'stocks_versions', 'firstPurchasePrice', 'total_transaksi', 'transaction_type', 'total_keuntungan', 'total_elpiji', 'start', 'end', 'currentDate'))->render();
 
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -154,6 +157,7 @@ class TransactionController extends Controller
 
 
         $data = $request->validated();
+        $data['created_at'] = now();
 
         $user = Auth::user();
         $data['user_id'] = $user->id;
@@ -163,11 +167,11 @@ class TransactionController extends Controller
         
 
         if ($transactionType == 'Pembelian') {
+            
+            DB::table('transactions')->insert($data);
 
             $total = $stock->stock + $quantity;
             DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-            
-            DB::table('transactions')->insert($data);
 
             return redirect()->route('transactions.create')
                 ->with('success', 'Berhasil DiTambahkan!');
@@ -182,19 +186,26 @@ class TransactionController extends Controller
                 $stockUpdate = $stock->stock - $quantity;
                 
                 if ($stockUpdate < 20) {
-                    $details['email'] = 'pemilik@gmail.com';
-                    dispatch(new SendEmailJob($details));
+                    $adminUsers = User::where('is_admin', 1)->get();
+
+                    foreach ($adminUsers as $adminUser) {
+                        $details['email'] = $adminUser->email;
+                        dispatch(new SendEmailJob($details));
+                    }
+
+                    DB::table('transactions')->insert($data);
 
                     DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockUpdate]);
-                    DB::table('transactions')->insert($data);
                 
                     return redirect()->route('transactions.create')
                         ->with('success', 'Berhasil DiTambahkan!')
                         ->with('warning', 'Stok tabung hampir habis, segera isi ulang');
 
                 } else {
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockUpdate]);
+                    
                     DB::table('transactions')->insert($data);
+
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockUpdate]);
 
                     return redirect()->route('transactions.create')->with('success', 'Berhasil Ditambahkan!');
 
@@ -241,9 +252,9 @@ class TransactionController extends Controller
                 return redirect()->route('transactions.purchase')
                     ->with('error', 'Stok tabung tidak mencukupi');
             }
+            $transaction->update($data);
 
             DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-            $transaction->update($data);
 
             return redirect()->route('transactions.purchase')
                 ->with('success', 'Berhasil DiTambahkan!');
@@ -259,19 +270,26 @@ class TransactionController extends Controller
             } else {
                 
                 if ($total < 20) {
-                    $details['email'] = 'pemilik@gmail.com';
-                    dispatch(new SendEmailJob($details));
+                    $adminUsers = User::where('is_admin', 1)->get();
+
+                    foreach ($adminUsers as $adminUser) {
+                        $details['email'] = $adminUser->email;
+                        dispatch(new SendEmailJob($details));
+                    }
+
+                    $transaction->update($data);
 
                     DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-                    $transaction->update($data);
                 
                     return redirect()->route('transactions.selling')
                         ->with('success', 'Berhasil DiTambahkan!')
                         ->with('warning', 'Stok tabung hampir habis, segera isi ulang');
 
                 } else {
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
+                    
                     $transaction->update($data);
+
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
                 
                     return redirect()->route('transactions.selling')
                         ->with('success', 'Berhasil DiTambahkan!');

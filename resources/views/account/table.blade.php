@@ -119,7 +119,7 @@
             </button>
             <div class="px-6 py-6 lg:px-8">
                 <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Tambah Akun</h3>
-                <form action="{{ route('users.store') }}" method="POST">
+                <form action="{{ route('register') }}" method="POST">
                   @csrf
                   @method('POST')
                   <div class="mb-6">

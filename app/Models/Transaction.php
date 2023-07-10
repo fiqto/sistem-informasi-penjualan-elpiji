@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTimestamps;
     protected $table = "transactions";
     protected $fillable = [
         'id',
@@ -21,6 +22,7 @@ class Transaction extends Model
         'price',
         'status',
         'order_notes',
+        'created_at',
     ];
 
     public function users(){

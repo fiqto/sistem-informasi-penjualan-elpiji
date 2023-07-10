@@ -242,7 +242,7 @@
 
 .select2-container--default .select2-results__option[aria-selected=true] {
 	/* The already selected option row color */
-	@apply bg-gray-300 dark:text-gray-700;
+	@apply bg-gray-300 dark:text-gray-700 hover:bg-sky-500  hover:text-white;
 }
 .select2-results__option--selected {
 	@apply hidden;
