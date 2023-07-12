@@ -47,9 +47,14 @@ class HomeController extends Controller
                 ->sum('quantity');
 
         // Menghitung Jumlah Pendapatan Penjualan Elpiji Hari Ini
-        $totalPendapatan = Transaction::where('transaction_type', '=', 'Penjualan')
+        $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
                 ->whereDate('transaction_date', $currentDate)
-                ->sum('price');
+                ->get();
+
+        $totalPendapatan = 0;
+        foreach ($transactions as $transaction) {
+                $totalPendapatan += $transaction->quantity * $transaction->price;
+        }
 
         // Menghitung Jumlah Penjualan Elpiji Hari Ini
         $totalPenjualan = Transaction::where('transaction_type', '=', 'Penjualan')

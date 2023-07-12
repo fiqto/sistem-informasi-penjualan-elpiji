@@ -18,7 +18,7 @@
             
             {{-- Search --}}
           <form action="{{ route('stocks.index') }}" class="form" method="GET">
-            <div class="flex px-5 w-full pt-2 pb-4">
+            <div class="flex w-full px-5 pt-2 pb-4">
                 <div class="relative w-full">
                     <input type="text" name="search" id="search" value="{{ old('search') }}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-gray-300 dark:placeholder-gray-400" placeholder="Search">
                     <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-[#4285F4] hover:bg-[#4285F4]/90 rounded-r-lg border border-blue-700">
@@ -128,6 +128,9 @@
                     <div class="mb-6">
                       <label for="product_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Barang</label>
                       <input type="text" id="product_name" name="product_name" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Nama Barang">
+                      @error('product_name')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                     </div>
                     <div class="mb-6">
                       <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Harga Beli</label>
@@ -136,6 +139,9 @@
                           Rp. 
                         </span>
                         <input type="number" id="purchase_price" name="purchase_price" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Beli">
+                        @error('purchase_price')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
                       </div>
                     </div>
                     <div class="mb-6">
@@ -145,6 +151,9 @@
                           Rp. 
                         </span>
                         <input type="number" id="selling_price" name="selling_price" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Jual">
+                        @error('selling_price')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
                       </div>
                     </div>
                     <div class="text-left">
@@ -200,6 +209,9 @@
                   <div class="mb-6">
                     <label for="product_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Barang</label>
                     <input type="text" id="product_name" name="product_name" value="{{ old('product_name', $stock->product_name) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Nama Barang">
+                    @error('product_name')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
                   </div>
                   <div class="mb-6">
                     <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Harga Beli</label>
@@ -208,6 +220,9 @@
                         Rp. 
                       </span>
                       <input type="number" id="purchase_price" name="purchase_price" value="{{ old('purchase_price', $stock->purchase_price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Beli">
+                      @error('purchase_price')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                     </div>
                   </div>
                   <div class="mb-6">
@@ -217,6 +232,9 @@
                         Rp. 
                       </span>
                       <input type="number" id="selling_price" name="selling_price" value="{{ old('selling_price', $stock->selling_price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Jual">
+                      @error('selling_price')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                     </div>
                   </div>
                   

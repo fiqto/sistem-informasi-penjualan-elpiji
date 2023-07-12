@@ -25,13 +25,6 @@ class UpdateTransactionRequest extends FormRequest
     {
         return [
             //
-            'transaction_type' => 'required',
-            'user_id' => 'nullable',
-            'member_id' => 'required',
-            'stock_id' => 'required',
-            'transaction_date' => 'required',
-            'quantity' => 'required|integer',
-            'price' => 'required|numeric',
             'status' => 'required',
             'order_notes' => 'nullable',
         ];

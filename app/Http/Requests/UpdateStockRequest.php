@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Unique;
+
 
 class UpdateStockRequest extends FormRequest
 {
@@ -23,9 +25,13 @@ class UpdateStockRequest extends FormRequest
      */
     public function rules(): array
     {
+        $stockId = $this->route('stock');
+
         return [
-            //
-            'product_name' => 'required',
+            'product_name' => [
+                'required',
+                (new Unique('stocks', 'product_name'))->ignore($stockId),
+            ],
             'stock' => 'nullable',
             'purchase_price' => 'required',
             'selling_price' => 'required',

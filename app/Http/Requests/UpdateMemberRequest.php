@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Unique;
 
 class UpdateMemberRequest extends FormRequest
 {
@@ -23,11 +24,20 @@ class UpdateMemberRequest extends FormRequest
      */
     public function rules()
     {
+        $memberId = $this->route('member');
+
         return [
             //
             'member_name' => 'required',
-            'phone_number' => 'required',
-            'address' => 'required',
+            'phone_number' => [
+                'required',
+                'regex:/^\+628[1-9]\d{7,11}$/',
+                (new Unique('members', 'phone_number'))->ignore($memberId),
+            ],
+            'address' => [
+                'required',
+                (new Unique('members', 'address'))->ignore($memberId),
+            ],
         ];
     }
 

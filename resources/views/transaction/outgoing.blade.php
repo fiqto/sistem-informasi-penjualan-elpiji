@@ -22,7 +22,7 @@
           
           {{-- Search --}}
           <form action="{{ route('transactions.selling') }}" class="form" method="GET">
-            <div class="flex px-5 w-full pt-2 pb-4">
+            <div class="flex w-full px-5 pt-2 pb-4">
                 <div class="relative w-full">
                     <input type="text" name="search" id="search" value="{{ old('search') }}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-gray-300 dark:placeholder-gray-400" placeholder="Search">
                     <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-[#4285F4] hover:bg-[#4285F4]/90 rounded-r-lg border border-blue-700">
@@ -238,15 +238,15 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="px-6 py-6 lg:px-8">
-                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Akun</h3>
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Transaksi Penjualan</h3>
                 <form class="space-y-6" action="{{ route('transactions.update', $transaction->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 <input type="hidden" id="transaction_type" name="transaction_type" value="{{ old('transaction_type', $transaction->transaction_type) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                 <div class="mb-6">
-                  <label for="member_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
-                  <select required id="member_id" name="member_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                  <label for="member_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Pelanggan</label>
+                  <select disabled required id="member_id" name="member_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                     <option selected value="{{ old('member_id', $transaction->member_id) }}">
                       @foreach($transaction->members()->get() as $member)
                       {{ $member->member_name }}
@@ -261,8 +261,8 @@
                 </div>
                 <div class="mb-6">
                   <label for="stock_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih Barang</label>
-                  <select required id="stock_id" name="stock_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                    <option selected value="{{ old('stock_id', $transaction->stock_id) }}">
+                  <select disabled required id="stock_id" name="stock_id" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <option value="{{ old('stock_id', $transaction->stock_id) }}">
                       @foreach($transaction->stocks()->get() as $stock)
                       {{ $stock->product_name }}
                       @endforeach
@@ -280,12 +280,12 @@
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                           <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <input datepicker datepicker-format="yyyy/mm/dd" type="text" id="transaction_date" name="transaction_date" value="{{ old('transaction_date', $transaction->transaction_date) }}" required class="border border-gray-200 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal">
+                        <input disabled datepicker datepicker-format="yyyy/mm/dd" type="text" id="transaction_date" name="transaction_date" value="{{ old('transaction_date', $transaction->transaction_date) }}" required class="border border-gray-200 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal">
                       </div>
                 </div>
                 <div class="mb-6">
                   <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Total Barang</label>
-                  <input type="number" id="quantity" name="quantity" value="{{ old('quantity', $transaction->quantity) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Total Barang">
+                  <input disabled type="number" id="quantity" name="quantity" value="{{ old('quantity', $transaction->quantity) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Total Barang">
                 </div>
                 <div class="mb-6">
                   <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Harga Satuan</label>
@@ -293,7 +293,7 @@
                     <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                       Rp. 
                     </span>
-                    <input type="number" id="price" name="price" value="{{ old('price', $transaction->price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Satuan">
+                    <input disabled type="number" id="price" name="price" value="{{ old('price', $transaction->price) }}" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-none rounded-r-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="Harga Satuan">
                   </div>
                 </div>
                 <div class="mb-6">

@@ -18,7 +18,7 @@
           
           {{-- Search --}}
           <form action="{{ route('members.index') }}" class="form" method="GET">
-            <div class="flex px-5 w-full pt-2 pb-4">
+            <div class="flex w-full px-5 pt-2 pb-4">
                 <div class="relative w-full">
                     <input type="text" name="search" id="search" value="{{ old('search') }}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-gray-300 dark:placeholder-gray-400" placeholder="Search">
                     <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-[#4285F4] hover:bg-[#4285F4]/90 rounded-r-lg border border-blue-700">
@@ -130,6 +130,9 @@
                   <div class="mb-6">
                       <label for="member_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Lengkap</label>
                       <input type="text" id="member_name" name="member_name" placeholder="Nama Lengkap" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('member_name')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                   </div>
                   <div class="mb-6">
                       <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">No. Telepon</label>
@@ -198,14 +201,23 @@
                   <div class="mb-6">
                       <label for="member_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Lengkap</label>
                       <input type="text" id="member_name" name="member_name" placeholder="Nama Lengkap" required value="{{ old('member_name', $member->member_name) }}" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('member_name')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                   </div>
                   <div class="mb-6">
                       <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">No. Telepon</label>
                       <input type="tel" id="phone_number" name="phone_number" placeholder="Nomer Telepon (+62812-3456-7890)" required value="{{ old('phone_number', $member->phone_number) }}" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('phone_number')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                   </div>
                   <div class="mb-6">
                       <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Lengkap</label>
                       <input type="text" id="address" name="address" placeholder="Alamat Lengkap" required value="{{ old('address', $member->address) }}" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('address')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
                   </div>
                   
                   <div class="text-left">

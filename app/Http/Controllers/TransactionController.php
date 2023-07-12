@@ -235,67 +235,18 @@ class TransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        $transactionType = $request->input('transaction_type');
-        $quantity = $request->input('quantity');
+        $transactionType = $transaction->transaction_type;
 
-        $data = $request->validated();
-
-        $stock_id = $request->input('stock_id');
-        $stock = DB::table('stocks')->where('id', $stock_id)->first();
-        
+        $transaction->update($request->validated());
 
         if ($transactionType == 'Pembelian') {
-
-            $total = $stock->stock - $transaction->quantity + $quantity;
-
-            if ($total < 0) {
-                return redirect()->route('transactions.purchase')
-                    ->with('error', 'Stok tabung tidak mencukupi');
-            }
-            $transaction->update($data);
-
-            DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-
             return redirect()->route('transactions.purchase')
-                ->with('success', 'Berhasil DiTambahkan!');
-
+            ->with('success', 'Berhasil Disimpan!');
         } else {
-
-            $total = $stock->stock + $transaction->quantity - $quantity;
-
-            if ($total < 0) {
-                return redirect()->route('transactions.selling')
-                    ->with('error', 'Stok tabung tidak mencukupi');
-
-            } else {
-                
-                if ($total < 20) {
-                    $adminUsers = User::where('is_admin', 1)->get();
-
-                    foreach ($adminUsers as $adminUser) {
-                        $details['email'] = $adminUser->email;
-                        dispatch(new SendEmailJob($details));
-                    }
-
-                    $transaction->update($data);
-
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-                
-                    return redirect()->route('transactions.selling')
-                        ->with('success', 'Berhasil DiTambahkan!')
-                        ->with('warning', 'Stok tabung hampir habis, segera isi ulang');
-
-                } else {
-                    
-                    $transaction->update($data);
-
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-                
-                    return redirect()->route('transactions.selling')
-                        ->with('success', 'Berhasil DiTambahkan!');
-                }
-            }
+            return redirect()->route('transactions.selling')
+            ->with('success', 'Berhasil Disimpan!');
         }
+            
     }
 
     /**
