@@ -1,9 +1,9 @@
 <x-app-layout>
   <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
-      <div class="relative items-center justify-center min-h-48 mb-4 rounded bg-white dark:bg-gray-800 p-8">
-          <div class="py-4 px-6">
-            <p class="text-2xl text-gray-900 dark:text-gray-500 mb-4">Daftar Akun</p>
+      <div class="relative items-center justify-center pt-4 mb-4 bg-white rounded min-h-48 dark:bg-gray-800 sm:p-2 md:p-4 lg:p-6 xl:p-8">
+          <div class="px-6 py-4">
+            <p class="mb-4 text-2xl text-gray-900 dark:text-gray-500">Daftar Akun</p>
             <button data-modal-target="add-modal" data-modal-toggle="add-modal" type="button" class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
@@ -16,7 +16,7 @@
 
           {{-- Search --}}
           <form action="{{ route('users.index') }}" class="form" method="GET">
-            <div class="flex px-5 w-full pt-2 pb-4">
+            <div class="flex w-full px-5 pt-2 pb-4">
                 <div class="relative w-full">
                     <input type="text" name="search" id="search" value="{{ old('search') }}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border-gray-300 dark:placeholder-gray-400" placeholder="Search">
                     <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-[#4285F4] hover:bg-[#4285F4]/90 rounded-r-lg border border-blue-700">
@@ -124,19 +124,19 @@
                   @method('POST')
                   <div class="mb-6">
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" placeholder="Nama Lengkap" required class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <input type="text" id="name" name="name" placeholder="Nama Lengkap" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                   </div>
                   <div class="mb-6">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email</label>
-                    <input type="text" id="email" name="email" placeholder="example@gmail.com" required class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <input type="text" id="email" name="email" placeholder="example@gmail.com" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                   </div>
                   <div class="mb-6">
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Kata sandi" required class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <input type="password" id="password" name="password" placeholder="Kata sandi" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                   </div>
                   <div class="mb-6">
                     <label for="password_confirmation" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Konfirmasi Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Konfirmasi kata sandi" required class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    <input type="password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Konfirmasi kata sandi" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                   </div>
 
                   <div class="text-left">

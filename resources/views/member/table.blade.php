@@ -1,7 +1,7 @@
 <x-app-layout>
   <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
-      <div class="relative items-center justify-center p-8 mb-4 bg-white rounded min-h-48 dark:bg-gray-800">
+      <div class="relative items-center justify-center pt-4 mb-4 bg-white rounded sm:p-2 md:p-4 lg:p-6 xl:p-8 min-h-48 dark:bg-gray-800">
           <div class="px-6 py-4">
             <p class="mb-4 text-2xl text-gray-900 dark:text-gray-500">Daftar Pelanggan</p>
             @if(Auth::user()->is_admin == 1)
