@@ -58,10 +58,6 @@
                             <span class="sr-only">Check icon</span>
                         </div>
                         <div class="ml-3 text-sm font-normal">{{ session('success') }}</div>
-                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
-                            <span class="sr-only">Close</span>
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </button>
                     </div>
                 @endif
 
@@ -76,10 +72,6 @@
                             <span class="sr-only">Error icon</span>
                         </div>
                         <div class="ml-3 text-sm font-normal">{{ session('error') }}</div>
-                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
-                            <span class="sr-only">Close</span>
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </button>
                     </div>
                 @endif
 
@@ -94,10 +86,6 @@
                             <span class="sr-only">Warning icon</span>
                         </div>
                         <div class="ml-3 text-sm font-normal">{{ session('warning') }}</div>
-                        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-warning" aria-label="Close">
-                            <span class="sr-only">Close</span>
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </button>
                     </div>
                 @endif
             </div>
@@ -115,9 +103,9 @@
         @livewireStyles
 
         
-        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
-        {{-- <script src="../path/to/flowbite/dist/datepicker.js"></script> --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
+        {{-- <script src="../node_modules/flowbite/dist/flowbite.min.js"></script> --}}
+        {{-- <script src="../node_modules/flowbite/dist/datepicker.min.js"></script> --}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/datepicker.min.js"></script>
 
         <script>
             window.addEventListener('DOMContentLoaded', (event) => {
@@ -127,57 +115,7 @@
                 }
             });
         </script>
+
         
-        <script
-            type="text/javascript"
-            src="../node_modules/tw-elements/dist/js/tw-elements.umd.min.js">
-        </script>
-        
-        <script>
-            $(document).ready(function() {
-                $('.select2').select2();
-            });
-        </script>        
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              // Get the transaction type and stock ID elements
-              const transactionType = document.getElementById('transaction_type');
-              const stockId = document.getElementById('stock_id');
-              const priceInput = document.getElementById('price');
-          
-              // Function to update the price field based on the selected transaction type and stock ID
-              function updatePriceField() {
-                const selectedTransactionType = transactionType.value;
-                const selectedStockId = stockId.value;
-          
-                // Send an API request to retrieve the price data
-                fetch(`/api/stock/${selectedStockId}`)
-                  .then(response => response.json())
-                  .then(data => {
-                    const { purchase_price, selling_price } = data;
-          
-                    if (selectedTransactionType === 'Pembelian') {
-                      priceInput.value = purchase_price || '0';
-                    } else if (selectedTransactionType === 'Penjualan') {
-                      priceInput.value = selling_price || '0';
-                    } else {
-                      priceInput.value = '';
-                    }
-                  })
-                  .catch(error => {
-                    console.error('Error:', error);
-                    priceInput.value = '';
-                  });
-              }
-          
-              // Add event listeners to the transaction type and stock ID dropdowns
-              transactionType.addEventListener('change', updatePriceField);
-              stockId.addEventListener('change', updatePriceField);
-          
-              // Call the function initially to set the default price value
-              updatePriceField();
-            });
-        </script>
     </body>
 </html>

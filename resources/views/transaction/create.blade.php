@@ -77,5 +77,48 @@
         </div>
       </div>
     </div>
+
+  <script>
+      $(document).ready(function() {
+          $('.select2').select2();
+      });
+  </script>        
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+
+        const transactionType = document.getElementById('transaction_type');
+        const stockId = document.getElementById('stock_id');
+        const priceInput = document.getElementById('price');
+    
+        function updatePriceField() {
+          const selectedTransactionType = transactionType.value;
+          const selectedStockId = stockId.value;
+    
+          fetch(`/api/stock/${selectedStockId}`)
+            .then(response => response.json())
+            .then(data => {
+              const { purchase_price, selling_price } = data;
+    
+              if (selectedTransactionType === 'Pembelian') {
+                priceInput.value = purchase_price || '0';
+              } else if (selectedTransactionType === 'Penjualan') {
+                priceInput.value = selling_price || '0';
+              } else {
+                priceInput.value = '';
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              priceInput.value = '';
+            });
+          }
+    
+        transactionType.addEventListener('change', updatePriceField);
+        stockId.addEventListener('change', updatePriceField);
+    
+        updatePriceField();
+      });
+  </script>
 </x-app-layout>
   

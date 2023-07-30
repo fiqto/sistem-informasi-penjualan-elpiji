@@ -53,17 +53,15 @@ Route::middleware([
     Route::post('/register', [RegisteredUserController::class, 'store'])
         ->middleware(['is_admin']);
 
-    Route::get('/api/stock/{stockId}', function ($stockId) {
-
-        $stock = Stock::find($stockId);
+    Route::get('/api/stock/{id}', function ($id) {
+        $stock = Stock::find($id);
 
         if ($stock) {
-            
             $purchase_price = $stock->purchase_price;
             $selling_price = $stock->selling_price;
-
         } else {
-            $price = 0;
+            $purchase_price = null;
+            $selling_price = null;
         }
 
         return response()->json([

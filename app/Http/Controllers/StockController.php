@@ -102,6 +102,10 @@ class StockController extends Controller
                 ->with('error', 'Tidak dapat menghapus data karena memiliki keterhubungan dengan transaksi yang ada.');
         }
 
+        $hasStockVersion = StockVersions::where('product_id', $stock->id)->get();
+
+        $hasStockVersion->each->delete();
+
         $stock->delete();
         
         return redirect()->route('stocks.index')

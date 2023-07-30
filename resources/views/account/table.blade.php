@@ -38,14 +38,6 @@
                       <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                         <div class="flex items-center">
                           Nama Lengkap
-                          <span class="flex pl-4">
-                            <form class="form" method="get" action="#">
-                            <button type="submit" value="member_name" id="col" name="col" class="ri-arrow-up-s-line"></button>
-                            </form>
-                            <form class="form" method="get" action="#">
-                            <button type="submit" value="member_name" id="col" name="col" class="ri-arrow-down-s-line"></button>
-                            </form>
-                          </span>
                         </div>
                       </th>
                       <th class="p-4 text-left text-gray-900 whitespace-nowrap">
@@ -88,10 +80,10 @@
                       </td>
                       <td class="p-4 text-sm text-gray-700 whitespace-nowrap">                                
                         <div class="inline-flex rounded-md" role="group">
-                          <button type="button" data-modal-target="#deleteModal{{ $user->id }}" data-modal-toggle="deleteModal{{ $user->id }}" class="text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-4 focus:ring-red-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
+                          <button type="button" data-modal-target="deleteModal{{ $user->id }}" data-modal-toggle="deleteModal{{ $user->id }}" class="text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-4 focus:ring-red-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                           </button>
-                          <button type="button" data-modal-target="#editModal{{ $user->id }}" data-modal-toggle="editModal{{ $user->id }}" class="text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
+                          <button type="button" data-modal-target="editModal{{ $user->id }}" data-modal-toggle="editModal{{ $user->id }}" class="text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-400 font-medium rounded-full text-sm px-2.5 py-2.5 text-center mr-1 my-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                           </button>
                         </div>
@@ -190,7 +182,7 @@
                     @method('PUT')
                     <div class="mb-6">
                       <label for="is_admin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih role</label>
-                      <select id="is_admin" name="is_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                      <select name="is_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         @if (($user->is_admin ==1))
                           <option selected value="1">Admin</option>
                           <option value="0">Pegawai</option>
