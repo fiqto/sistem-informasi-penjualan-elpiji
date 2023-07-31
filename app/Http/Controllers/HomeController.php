@@ -75,10 +75,12 @@ class HomeController extends Controller
 
         // Tabel Transaksi Lunas
         $statusLunas = Transaction::where('status', '=', 'Lunas')
+                ->orderBy('id', 'desc')
                 ->paginate(5);
 
          // Tabel Transaksi Lunas
         $statusBelum = Transaction::where('status', '=', 'Belum Lunas')
+                ->orderBy('id', 'desc')
                 ->paginate(5);
 
         // dd($yesterday);
