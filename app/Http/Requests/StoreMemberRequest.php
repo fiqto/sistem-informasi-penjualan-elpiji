@@ -25,6 +25,7 @@ class StoreMemberRequest extends FormRequest
     {
         return [
             //
+            'nik' => 'required|unique:members|numeric|digits:16',
             'member_name' => 'required',
             'phone_number' => 'required|unique:members|regex:/^\+628[1-9]\d{7,11}$/',
             'address' => 'required|unique:members',

@@ -39,31 +39,28 @@
                     </th>
                     <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                       <div class="flex items-center">
+                        NIK
+                      </div>
+                    </th>
+                    <th class="p-4 text-left text-gray-900 whitespace-nowrap">
+                      <div class="flex items-center">
                         Nama Pelanggan
-                        <span class="flex pl-4">
-                          <form class="form" method="get" action="#">
-                            <button type="submit" value="member_name" id="col" name="col" class="ri-arrow-up-s-line"></button>
-                          </form>
-                          <form class="form" method="get" action="#">
-                            <button type="submit" value="member_name" id="col" name="col" class="ri-arrow-down-s-line"></button>
-                          </form>
-                        </span>
                       </div>
                     </th>
                     <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                       <div class="flex items-center">
-                      Nomor Telepon
+                        Nomor Telepon
                       </div>
                     </th>
                     <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                       <div class="flex items-center">
-                      Alamat Lengkap
+                        Alamat Lengkap
                       </div>
                     </th>
                     @if(Auth::user()->is_admin == 1)
                     <th class="p-4 text-left text-gray-900 whitespace-nowrap">
                       <div class="flex items-center">
-                      Aksi
+                        Aksi
                       </div>
                     </th>
                     @endif
@@ -76,6 +73,9 @@
                     <tr>
                       <td class="p-4 text-left text-gray-900 whitespace-nowrap">
                         {{ $loop->iteration }}
+                      </td>
+                      <td class="p-4 text-gray-900 whitespace-nowrap">
+                        {{ $member->nik }}
                       </td>
                       <td class="p-4 text-gray-900 whitespace-nowrap">
                         {{ $member->member_name }}
@@ -127,6 +127,13 @@
                 <form action="{{ route('members.store') }}" method="POST">
                   @csrf
                   @method('POST')
+                  <div class="mb-6">
+                      <label for="nik" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">NIK</label>
+                      <input type="number" id="nik" name="nik" placeholder="NIK" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('nik')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
+                  </div>
                   <div class="mb-6">
                       <label for="member_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Lengkap</label>
                       <input type="text" id="member_name" name="member_name" placeholder="Nama Lengkap" required class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
@@ -198,6 +205,13 @@
                 <form action="{{ route('members.update', $member->id) }}" method="POST">
                   @csrf
                   @method('PUT')
+                  <div class="mb-6">
+                      <label for="nik" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">No. Telepon</label>
+                      <input type="number" id="nik" name="nik" placeholder="NIK" required value="{{ old('nik', $member->nik) }}" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                      @error('nik')
+                          <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                      @enderror
+                  </div>
                   <div class="mb-6">
                       <label for="member_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama Lengkap</label>
                       <input type="text" id="member_name" name="member_name" placeholder="Nama Lengkap" required value="{{ old('member_name', $member->member_name) }}" class="block w-full px-4 py-3 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">

@@ -93,12 +93,21 @@
               </ul>
             </li>
             <li>
-              <a href="{{ route('stocks.index') }}" class="{{ Route::is('stocks.index') ? 'flex items-center p-2 rounded-lg text-white bg-gray-700' : 'flex items-center p-2 rounded-lg text-white hover:bg-gray-700'}}">
-                <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
-                </svg>
-                <span class="flex-1 ml-3 whitespace-nowrap">Stok</span>
-              </a>
+              <button type="button" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg group hover:bg-gray-700" aria-controls="dropdown-stok" data-collapse-toggle="dropdown-stok">
+                    <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
+                    </svg>
+                    <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Stok</span>
+                    <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+              </button>
+              <ul id="dropdown-stok" class="hidden py-2 space-y-2" style="{{ request()->routeIs('stocks.index', 'stock-opname.index') ? 'display: block;' : '' }}">
+                    <li>
+                      <a href="{{ route('stocks.index') }}" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 {{ request()->routeIs('stocks.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Barang</a>
+                    </li>
+                    <li>
+                      <a href="{{ route('stock-opname.index') }}" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 {{ request()->routeIs('stock-opname.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Penyesuaian</a>
+                  </li>
+              </ul>
             </li>
             <li>
               <a href="{{ route('members.index') }}" class="{{ Route::is('members.index') ? 'flex items-center p-2 rounded-lg text-white bg-gray-700' : 'flex items-center p-2 rounded-lg text-white hover:bg-gray-700'}}">

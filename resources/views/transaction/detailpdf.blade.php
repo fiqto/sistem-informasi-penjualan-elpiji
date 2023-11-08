@@ -64,7 +64,7 @@
     </table>
     <table width="100%" style="font-family: sans-serif;" cellpadding="10">
         <tr>
-            <td width="49%" style="border: 0.1mm solid #eee;">Nama : {{ $transaction->members->member_name }}<br>Alamat : {{ $transaction->members->address }}<br>Telepon : {{ $transaction->members->phone_number }}<br></td>
+            <td width="49%" style="border: 0.1mm solid #eee;">Kode Transaksi : {{ $transaction->transaction_code }}<br>Tanggal Transaksi : {{ $transaction->transaction_date }}<br>Nama : {{ $transaction->members->member_name }}<br>Alamat : {{ $transaction->members->address }}<br>Telepon : {{ $transaction->members->phone_number }}<br></td>
             <td width="2%">&nbsp;</td>
             <td width="49%" style="border: 0.1mm solid #eee; text-align: right;"><strong>Pangkalan Elpiji Herman</strong><br>Jl. Jenggolo 2B/8,<br> Pucang, Kabupaten Sidoarjo,<br>Jawa Timur 61219<br><br><strong>Telepon :</strong> +62 822-1002-6245<br></td>
         </tr>
@@ -75,23 +75,39 @@
     <table class="items" width="100%" style="font-size: 14px; border-collapse: collapse;" cellpadding="8">
         <thead>
             <tr>
+                <td width="10%" style="text-align: center;"><strong>No</strong></td>
                 <td width="30%" style="text-align: center;"><strong>Nama Barang</strong></td>
-                <td width="25%" style="text-align: center;"><strong>Tanggal Transaksi</strong></td>
-                <td width="15%" style="text-align: center;"><strong>Harga Satuan</strong></td>
-                <td width="10%" style="text-align: center;"><strong>Jumlah</strong></td>
-                <td width="20%" style="text-align: center;"><strong>Total</strong></td>
+                <td width="20%" style="text-align: center;"><strong>Jumlah Barang</strong></td>
+                <td width="20%" style="text-align: center;"><strong>Harga Satuan</strong></td>
+                <td width="20%" style="text-align: center;"><strong>Total Harga</strong></td>
             </tr>
         </thead>
         <tbody>
-            <!-- ITEMS HERE -->
-            <tr>
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->stocks->product_name }}</td>
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->transaction_date }}</td>
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->price, 0, ',', '.') }}</td>
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $transaction->quantity }}</td>
-                <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($transaction->quantity * $transaction->price, 0, ',', '.') }}</td>
-            </tr>
+            @php
+                $totalHarga = 0;
+                $nomor = 1;
+            @endphp
+            @foreach($transactiondetails as $detail)
+                @if($detail->transaction_id == $transaction->id)
+                <tr>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $nomor++ }}</td>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $detail->stocks()->first()->product_name }}</td>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">{{ $detail->quantity }}</td>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($detail->price, 0, ',', '.') }}</td>
+                    <td style="padding: 0px 5px; line-height: 20px; text-align: center;">Rp.{{ number_format($detail->quantity * $detail->price, 0, ',', '.') }}</td>
+                </tr>
+                @php
+                    $totalHarga += $detail->quantity * $detail->price;
+                @endphp
+                @endif
+            @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Total :</strong></td>
+                <td style="text-align: center;">Rp.{{ number_format($totalHarga, 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
     </table>
     <br>
 

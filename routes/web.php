@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionDetailController;
 use App\Http\Controllers\UserController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Illuminate\Http\Request;
@@ -45,7 +47,10 @@ Route::middleware([
     Route::get('/pembelian', [TransactionController::class, 'purchase'])->name('transactions.purchase');
     Route::get('/penjualan', [TransactionController::class, 'selling'])->name('transactions.selling');
 
+    Route::put('/transaction-detail/{transactionDetail}', [TransactionDetailController::class, 'update'])->name('transaction-detail.update');
+
     Route::resource('stocks', StockController::class);
+    Route::resource('stock-opname', StockOpnameController::class);
 
     Route::get('/register', [RegisteredUserController::class, 'create'])
         ->middleware(['is_admin'])

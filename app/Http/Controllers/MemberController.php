@@ -19,7 +19,8 @@ class MemberController extends Controller
         //
         if ($request->has('search')) {
             $keyword = $request->search;
-            $members = Member::where('member_name', 'like', "%$keyword%")
+            $members = Member::where('nik', 'like', "%$keyword%")
+                ->orWhere('member_name', 'like', "%$keyword%")
                 ->orWhere('phone_number', 'like', "%$keyword%")
                 ->orWhere('address', 'like', "%$keyword%")
                 ->orderBy('id', 'desc')

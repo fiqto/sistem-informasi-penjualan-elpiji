@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreTransactionRequest extends FormRequest
+class UpdateStockOpnameRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,18 +23,14 @@ class StoreTransactionRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             //
-            'transaction_code' => 'required',
-            'user_id' => 'nullable',
-            'member_id' => 'required',
+            'opname_code' => 'required',
             'stock_id' => 'required',
-            'transaction_date' => 'required',
-            'quantity' => 'required|integer',
-            'price' => 'required|numeric',
-            'status' => 'required',
-            'order_notes' => 'nullable',
-            'created_at' => 'nullable',
+            'opname_date' => 'required',
+            'quantity_after' => 'required',
+            'opname_note' => 'nullable',
         ];
     }
 

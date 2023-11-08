@@ -19,12 +19,16 @@ class Stock extends Model
         'updated_at',
     ];
 
-    public function transactions(){
-    	return $this->hasMany(Transaction::class, 'id', 'stock_id');
+    public function transaction_details(){
+    	return $this->hasMany(TransactionDetail::class, 'id', 'stock_id');
     }
 
     public function stocks_versions(){
     	return $this->hasMany(StockVersions::class, 'id', 'product_id');
+    }
+
+    public function stock_opnames(){
+    	return $this->hasMany(StockOpname::class, 'id', 'stock_id');
     }
 
 }

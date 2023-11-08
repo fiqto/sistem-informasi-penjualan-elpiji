@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Member;
+use App\Models\User;
+use App\Models\TransactionDetail;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Transaction extends Model
@@ -13,13 +15,10 @@ class Transaction extends Model
     protected $table = "transactions";
     protected $fillable = [
         'id',
-        'transaction_type',
+        'transaction_code',
         'user_id',
         'member_id',
-        'stock_id',
         'transaction_date',
-        'quantity',
-        'price',
         'status',
         'order_notes',
         'created_at',
@@ -33,8 +32,8 @@ class Transaction extends Model
     	return $this->belongsTo(Member::class,'member_id', 'id');
     }
 
-    public function stocks(){
-    	return $this->belongsTo(Stock::class,'stock_id', 'id');
+    public function transaction_details(){
+    	return $this->hasMany(TransactionDetail::class, 'id', 'transaction_id');
     }
 
 }

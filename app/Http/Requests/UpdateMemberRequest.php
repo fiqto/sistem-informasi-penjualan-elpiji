@@ -28,6 +28,12 @@ class UpdateMemberRequest extends FormRequest
 
         return [
             //
+            'nik' => [
+                'required',
+                'numeric',
+                'digits:16',
+                (new Unique('members', 'nik'))->ignore($memberId),
+            ],
             'member_name' => 'required',
             'phone_number' => [
                 'required',

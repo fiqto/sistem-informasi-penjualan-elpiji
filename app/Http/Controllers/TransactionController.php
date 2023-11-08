@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\DB;
 use App\Jobs\SendEmailJob;
 use App\Models\Stock;
 use App\Models\StockVersions;
+use App\Models\TransactionDetail;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Date;
 
 class TransactionController extends Controller
@@ -32,7 +34,7 @@ class TransactionController extends Controller
     {
         if ($request->has('search')) {
             $keyword = $request->search;
-            $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
+            $transactions = Transaction::where('transaction_code', 'like', "%PMB%")
                 ->where(function ($query) use ($keyword) {
                     $query->whereHas('members', function ($query) use ($keyword) {
                         $query->where('member_name', 'like', "%$keyword%");
@@ -42,22 +44,23 @@ class TransactionController extends Controller
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         } else {
-            $transactions = Transaction::where('transaction_type', '=', 'Pembelian')
+            $transactions = Transaction::where('transaction_code', 'like', "%PMB%")
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         }
 
         $members = Member::latest()->get();
         $stocks = Stock::latest()->get();
+        $transactiondetails = TransactionDetail::latest()->get();
 
-        return view('transaction.incoming', compact('transactions','members', 'stocks'));
+        return view('transaction.incoming', compact('transactions','members', 'stocks', 'transactiondetails'));
     }
 
     public function selling(Request $request)
     {
         if ($request->has('search')) {
             $keyword = $request->search;
-            $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
+            $transactions = Transaction::where('transaction_code', 'like', "%PNJ%")
                 ->where(function ($query) use ($keyword) {
                     $query->whereHas('members', function ($query) use ($keyword) {
                         $query->where('member_name', 'like', "%$keyword%");
@@ -67,7 +70,7 @@ class TransactionController extends Controller
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         } else {
-            $transactions = Transaction::where('transaction_type', '=', 'Penjualan')
+            $transactions = Transaction::where('transaction_code', 'like', "%PNJ%")
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         }
@@ -78,7 +81,6 @@ class TransactionController extends Controller
         return view('transaction.outgoing', compact('transactions', 'members', 'stocks'));
         
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -95,12 +97,12 @@ class TransactionController extends Controller
     public function print(Request $request)
     {
         // dd($request->stock_id);
-        $transaction_type = $request->input('transaction_type');
+        $transaction_code = $request->input('transaction_code');
         $start = (new DateTime($request->input('start')))->format('Y-m-d');
         $end = (new DateTime($request->input('end')))->format('Y-m-d');
         $currentDate = Carbon::now()->format('Y-m-d');
 
-        $transactions = Transaction::where('transaction_type', $transaction_type)
+        $transactions = Transaction::where('transaction_code', $transaction_code)
             ->orderBy('id', 'desc')
             ->whereBetween('transaction_date',[$start, $end])
             ->get();
@@ -124,7 +126,7 @@ class TransactionController extends Controller
         $total_keuntungan = 0;
 
         $dompdf = new Dompdf();
-        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'stocks_versions', 'firstPurchasePrice', 'total_transaksi', 'transaction_type', 'total_keuntungan', 'total_elpiji', 'start', 'end', 'currentDate'))->render();
+        $html = view('transaction.pdf', compact('transactions', 'members', 'stocks', 'stocks_versions', 'firstPurchasePrice', 'total_transaksi', 'transaction_code', 'total_keuntungan', 'total_elpiji', 'start', 'end', 'currentDate'))->render();
 
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -136,9 +138,10 @@ class TransactionController extends Controller
     {
         $members = Member::all();
         $stocks = Stock::all();
+        $transactiondetails = TransactionDetail::all();
 
         $dompdf = new Dompdf();
-        $html = view('transaction.detailpdf', compact('transaction', 'members', 'stocks'))->render();
+        $html = view('transaction.detailpdf', compact('transaction', 'members', 'stocks', 'transactiondetails'))->render();
         
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -149,67 +152,82 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTransactionRequest $request)
+    public function store(Request $request)
     {   
-        
-        $transactionType = $request->input('transaction_type');
-        $quantity = $request->input('quantity');
-
-
-        $data = $request->validated();
-        $data['created_at'] = now();
 
         $user = Auth::user();
-        $data['user_id'] = $user->id;
 
-        $stock_id = $request->input('stock_id');
-        $stock = DB::table('stocks')->where('id', $stock_id)->first();
-        
+        $transaction = Transaction::create([
+            'transaction_code' => $request->input('transaction_code'),
+            'user_id' => $user->id,
+            'member_id' => $request->input('member_id'),
+            'transaction_date' => $request->input('transaction_date'),
+            'status' => "Lunas",
+            'order_notes' => $request->input('order_notes'),
+        ]);
 
-        if ($transactionType == 'Pembelian') {
+        $details = $request->input('details');
+
+        if (Str::startsWith($request->input('transaction_code'), 'PMB')) {
+            foreach ($details as $detail) {
+                $stock_id = $detail['stock_id'];
+                $stock = DB::table('stocks')->where('id', $stock_id)->first();
+
+                $transactiondetails = TransactionDetail::create([
+                    'transaction_id' => $transaction->id,
+                    'stock_id' => $detail['stock_id'],
+                    'quantity' => $detail['quantity'],
+                    'debt_quantity' => $detail['debt_quantity'],
+                    'price' => $detail['price'],
+                ]);
+
+                $total = $stock->stock + $detail['quantity'];
+                DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
+            }
             
-            DB::table('transactions')->insert($data);
-
-            $total = $stock->stock + $quantity;
-            DB::table('stocks')->where('id', $stock_id)->update(['stock' => $total]);
-
             return redirect()->route('transactions.create')
                 ->with('success', 'Berhasil DiTambahkan!');
+        } else{
+            DB::beginTransaction();
 
-        } else {
+            try {
+                foreach ($details as $detail) {
+                    
+                    $stock = DB::table('stocks')->lockForUpdate()->find($detail['stock_id']);
 
-            if ($quantity > $stock->stock) {
-                return redirect()->route('transactions.create')
-                    ->with('error', 'Stok tabung tidak mencukupi');
-
-            } else {
-                $stockUpdate = $stock->stock - $quantity;
-                
-                if ($stockUpdate < 20) {
-                    $adminUsers = User::where('is_admin', 1)->get();
-
-                    foreach ($adminUsers as $adminUser) {
-                        $details['email'] = $adminUser->email;
-                        dispatch(new SendEmailJob($details));
+                    if (!$stock || $detail['quantity'] > $stock->stock) {
+                        throw new \Exception('Stok tabung tidak mencukupi');
                     }
 
-                    DB::table('transactions')->insert($data);
+                    $stockUpdate = $stock->stock - $detail['quantity'];
 
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockUpdate]);
-                
-                    return redirect()->route('transactions.create')
-                        ->with('success', 'Berhasil DiTambahkan!')
-                        ->with('warning', 'Stok tabung hampir habis, segera isi ulang');
+                    TransactionDetail::create([
+                        'transaction_id' => $transaction->id,
+                        'stock_id' => $detail['stock_id'],
+                        'quantity' => $detail['quantity'],
+                        'debt_quantity' => $detail['debt_quantity'],
+                        'price' => $detail['price'],
+                    ]);
 
-                } else {
-                    
-                    DB::table('transactions')->insert($data);
+                    if ($stockUpdate < 20) {
+                        $adminUsers = User::where('is_admin', 1)->get();
+                        foreach ($adminUsers as $adminUser) {
+                            $details['email'] = $adminUser->email;
+                            dispatch(new SendEmailJob($details));
+                        }
+                    }
 
-                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockUpdate]);
-
-                    return redirect()->route('transactions.create')->with('success', 'Berhasil Ditambahkan!');
-
+                    DB::table('stocks')->where('id', $detail['stock_id'])->update(['stock' => $stockUpdate]);
                 }
+
+                DB::commit();
+                return redirect()->route('transactions.create')->with('success', 'Berhasil Ditambahkan!');
+
+            } catch (\Exception $e) {
+
+                DB::rollback();
+                return redirect()->route('transactions.create')->with('error', 'Terjadi kesalahan saat menambahkan transaksi');
+
             }
         }
     }
@@ -228,6 +246,12 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         //
+        $members = Member::latest()->get();
+        $stocks = Stock::latest()->get();
+        $transactiondetails = TransactionDetail::latest()->get();
+
+        return view('transaction.detail', compact('transaction','members', 'stocks', 'transactiondetails'));
+
     }
 
     /**
@@ -235,14 +259,44 @@ class TransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        $transactionType = $transaction->transaction_type;
 
         $transaction->update($request->validated());
 
-        if ($transactionType == 'Pembelian') {
+        if (Str::startsWith($transaction->transaction_code, 'PMB')) {
+
+            if($request->input('status') == 'Batal'){
+                $transaction_detail = TransactionDetail::whereIn('transaction_id', [$transaction->id])
+                    ->get();
+                
+                foreach ($transaction_detail as $detail) {
+                    $stock_id = $detail->stock_id;
+                    $stock = DB::table('stocks')->where('id', $stock_id)->first();
+    
+                    $stockAfter = $stock->stock - $detail->quantity;
+    
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockAfter]);
+                }
+            }
+
             return redirect()->route('transactions.purchase')
             ->with('success', 'Berhasil Disimpan!');
         } else {
+
+            if($request->input('status') == 'Batal'){
+                $transaction_detail = TransactionDetail::whereIn('transaction_id', [$transaction->id])
+                    ->get();
+
+                
+                foreach ($transaction_detail as $detail) {
+                    $stock_id = $detail->stock_id;
+                    $stock = DB::table('stocks')->where('id', $stock_id)->first();
+    
+                    $stockAfter = $stock->stock + $detail->quantity;
+    
+                    DB::table('stocks')->where('id', $stock_id)->update(['stock' => $stockAfter]);
+                }
+            }
+
             return redirect()->route('transactions.selling')
             ->with('success', 'Berhasil Disimpan!');
         }
@@ -255,12 +309,12 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
-        $transactionType = $transaction->transaction_type;
+        $transactionType = $transaction->transaction_code;
 
         $stock_id = $transaction->stock_id;
         $stock = DB::table('stocks')->where('id', $stock_id)->first();
 
-        if ($transactionType == 'Pembelian') {
+        if (Str::startsWith($transactionType, 'PMB')) {
 
             $total = $stock->stock - $transaction->quantity;
 
